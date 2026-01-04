@@ -55,7 +55,8 @@ export function useMouseInteraction() {
 
         // Decay wave intensity over time
         decayInterval = setInterval(() => {
-            setWaveIntensity((prev) => Math.max(prev * 0.94, 0));
+            const currentIntensity = useSpaceStore.getState().waveIntensity;
+            setWaveIntensity(Math.max(currentIntensity * 0.94, 0));
         }, 50);
 
         window.addEventListener('mousemove', handleMouseMove, { passive: true });
