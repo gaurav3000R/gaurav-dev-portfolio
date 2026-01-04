@@ -2,55 +2,50 @@
 
 import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Points, PointMaterial } from '@react-three/drei';
 import * as THREE from 'three';
+import { useSpaceStore } from '@/store/spaceStore';
 
 /**
  * Starfield Component
  * 
  * Multi-layer starfield with:
  * - Parallax depth via Z-position variation
- * - Subtle twinkling using Perlin-like noise (not random)
+ * - Noise-based twinkling (not random blinking)
  * - Wave distortion from mouse interaction
+ * - Scroll-based parallax
  * - Performance-optimized with BufferGeometry
- * 
- * @param waveIntensity - Current wave effect strength from mouse movement
  */
-interface StarfieldProps {
-    waveIntensity: number;
-}
-
-export default function Starfield({ waveIntensity }: StarfieldProps) {
+export default function Starfield() {
     return (
         <>
             {/* Near layer - larger, brighter stars */}
             <StarLayer
-                count={800}
-                depth={100}
-                size={0.8}
+                count={600}
+                depth={80}
+                size={1.0}
                 brightness={1.0}
-                speed={0.05}
-                waveIntensity={waveIntensity}
+                speed={0.04}
+                parallaxFactor={1.0}
             />
 
             {/* Mid layer - medium stars */}
             <StarLayer
-                count={1500}
-                depth={200}
-                size={0.5}
-                brightness={0.7}
-                speed={0.03}
-                waveIntensity={waveIntensity * 0.7}
+                count={1200}
+                depth={150}
+                size={0.6}
+                brightness={0.75}
+                speed={0.025}
+                parallaxFactor={0.6}
             />
 
             {/* Far layer - distant, subtle stars */}
             <StarLayer
-                count={2000}
-                depth={300}
-                size={0.3}
-                brightness={0.4}
+                count={1800}
+                depth={250}
+                size={0.4}
+                brightness={0.5}
                 speed={0.01}
-                waveIntensity={waveIntensity * 0.4}
+                parallaxFactor={0.3}
             />
         </>
     );
@@ -65,11 +60,23 @@ interface StarLayerProps {
     size: number;
     brightness: number;
     speed: number;
-    waveIntensity: number;
+    parallaxFactor: number;
 }
 
-function StarLayer({ count, depth, size, brightness, speed, waveIntensity }: StarLayerProps) {
+function StarLayer({
+    count,
+    depth,
+    size,
+    brightness,
+    speed,
+    parallaxFactor
+}: StarLayerProps) {
     const pointsRef = useRef<THREE.Points>(null);
+
+    // Get interaction state
+    const waveIntensity = useSpaceStore((state) => state.waveIntensity);
+    const mousePosition = useSpaceStore((state) => state.mousePosition);
+    const scrollProgress = useSpaceStore((state) => state.scrollProgress);
 
     // Generate star positions with depth variation
     const { positions, originalPositions } = useMemo(() => {
@@ -86,7 +93,7 @@ function StarLayer({ count, depth, size, brightness, speed, waveIntensity }: Sta
 
             const x = radius * Math.sin(phi) * Math.cos(theta);
             const y = radius * Math.sin(phi) * Math.sin(theta);
-            const z = -radius * Math.cos(phi) - 100; // Push back in Z
+            const z = -radius * Math.cos(phi) - 100;
 
             positions[i3] = x;
             positions[i3 + 1] = y;
@@ -100,7 +107,7 @@ function StarLayer({ count, depth, size, brightness, speed, waveIntensity }: Sta
         return { positions, originalPositions };
     }, [count, depth]);
 
-    // Animate stars: subtle twinkle + wave distortion
+    // Animate stars: noise-based twinkle + wave distortion + scroll parallax
     useFrame((state) => {
         if (!pointsRef.current) return;
 
@@ -113,20 +120,26 @@ function StarLayer({ count, depth, size, brightness, speed, waveIntensity }: Sta
             const y = originalPositions[i3 + 1];
             const z = originalPositions[i3 + 2];
 
-            // Perlin-like noise for smooth twinkling
-            // Using multiple sine waves at different frequencies
+            // Noise-based twinkling using multiple sine waves
             const twinkle =
-                Math.sin(time * 0.5 + i * 0.1) * 0.3 +
-                Math.sin(time * 0.3 + i * 0.05) * 0.2;
+                Math.sin(time * 0.4 + i * 0.1) * 0.25 +
+                Math.sin(time * 0.25 + i * 0.05) * 0.15 +
+                Math.cos(time * 0.3 + i * 0.08) * 0.1;
 
             // Wave distortion from mouse movement
-            const distance = Math.sqrt(x * x + y * y);
-            const wave = Math.sin(distance * 0.02 - time * 2) * waveIntensity * 5;
+            const distanceToMouse = Math.sqrt(
+                Math.pow((x / 100) - mousePosition.x, 2) +
+                Math.pow((y / 100) - mousePosition.y, 2)
+            );
+            const wave = Math.sin(distanceToMouse * 2.5 - time * 2.5) * waveIntensity * 4;
 
-            // Apply subtle movement
-            posArray[i3] = x + twinkle * 0.1 + wave;
-            posArray[i3 + 1] = y + twinkle * 0.1 + wave;
-            posArray[i3 + 2] = z + twinkle * 0.05;
+            // Scroll parallax
+            const scrollOffset = scrollProgress * depth * parallaxFactor * 0.1;
+
+            // Apply all effects
+            posArray[i3] = x + twinkle * 0.08 + wave;
+            posArray[i3 + 1] = y + twinkle * 0.08 + wave;
+            posArray[i3 + 2] = z + twinkle * 0.04 + scrollOffset;
         }
 
         pointsRef.current.geometry.attributes.position.needsUpdate = true;
@@ -136,21 +149,24 @@ function StarLayer({ count, depth, size, brightness, speed, waveIntensity }: Sta
     });
 
     return (
-        <Points
-            ref={pointsRef}
-            positions={positions}
-            stride={3}
-            frustumCulled={false}
-        >
-            <PointMaterial
-                transparent
+        <points ref={pointsRef} frustumCulled={false}>
+            <bufferGeometry>
+                <bufferAttribute
+                    attach="attributes-position"
+                    count={count}
+                    array={positions}
+                    itemSize={3}
+                />
+            </bufferGeometry>
+            <pointsMaterial
                 color="#ffffff"
                 size={size}
                 sizeAttenuation
+                transparent
                 opacity={brightness}
                 depthWrite={false}
                 blending={THREE.AdditiveBlending}
             />
-        </Points>
+        </points>
     );
 }

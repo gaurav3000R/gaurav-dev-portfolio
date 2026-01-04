@@ -1,62 +1,64 @@
-'use client';
-
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Vector2 } from 'three';
+import { useSpaceStore } from '@/store/spaceStore';
 
 /**
  * useMouseInteraction Hook
  * 
- * Tracks mouse movement and generates subtle spatial effects.
- * - mouseOffset: Normalized mouse position for camera parallax
- * - waveIntensity: Decaying wave effect for particle distortion
- * 
- * All values are smoothed and bounded for cinematic feel.
+ * Tracks mouse movement and calculates:
+ * - Normalized position for camera parallax
+ * - Velocity for wave effects
+ * - Smooth interpolation for cinematic feel
  */
 export function useMouseInteraction() {
-    const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
-    const [waveIntensity, setWaveIntensity] = useState(0);
     const lastMousePos = useRef(new Vector2(0, 0));
-    const targetOffset = useRef({ x: 0, y: 0 });
+    const targetPos = useRef(new Vector2(0, 0));
+    const currentPos = useRef(new Vector2(0, 0));
+
+    const setMousePosition = useSpaceStore((state) => state.setMousePosition);
+    const setMouseVelocity = useSpaceStore((state) => state.setMouseVelocity);
+    const setWaveIntensity = useSpaceStore((state) => state.setWaveIntensity);
 
     useEffect(() => {
         let animationFrame: number;
         let decayInterval: NodeJS.Timeout;
 
         const handleMouseMove = (event: MouseEvent) => {
-            // Normalize mouse position to [-1, 1]
+            // Normalize to [-1, 1]
             const x = (event.clientX / window.innerWidth) * 2 - 1;
             const y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-            // Calculate mouse velocity for wave effect
-            const currentPos = new Vector2(x, y);
-            const velocity = currentPos.distanceTo(lastMousePos.current);
-            lastMousePos.current.copy(currentPos);
+            targetPos.current.set(x, y);
 
-            // Set target offset for smooth interpolation
-            targetOffset.current = { x, y };
+            // Calculate velocity for wave effect
+            const currentMouse = new Vector2(x, y);
+            const velocity = currentMouse.distanceTo(lastMousePos.current);
+            lastMousePos.current.copy(currentMouse);
 
-            // Trigger wave based on movement velocity
-            // Higher velocity = stronger wave, but capped for subtlety
+            setMouseVelocity(velocity);
+
+            // Trigger wave based on velocity (capped for subtlety)
             if (velocity > 0.01) {
-                setWaveIntensity(Math.min(velocity * 2, 0.3));
+                setWaveIntensity(Math.min(velocity * 1.5, 0.25));
             }
         };
 
-        // Smooth interpolation of mouse offset
+        // Smooth interpolation loop
         const animate = () => {
-            setMouseOffset((prev) => ({
-                x: prev.x + (targetOffset.current.x - prev.x) * 0.1,
-                y: prev.y + (targetOffset.current.y - prev.y) * 0.1,
-            }));
+            // Lerp for smooth camera movement
+            currentPos.current.lerp(targetPos.current, 0.08);
+
+            setMousePosition(currentPos.current.x, currentPos.current.y);
+
             animationFrame = requestAnimationFrame(animate);
         };
 
         // Decay wave intensity over time
         decayInterval = setInterval(() => {
-            setWaveIntensity((prev) => Math.max(prev * 0.95, 0));
+            setWaveIntensity((prev) => Math.max(prev * 0.94, 0));
         }, 50);
 
-        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mousemove', handleMouseMove, { passive: true });
         animate();
 
         return () => {
@@ -64,7 +66,5 @@ export function useMouseInteraction() {
             cancelAnimationFrame(animationFrame);
             clearInterval(decayInterval);
         };
-    }, []);
-
-    return { mouseOffset, waveIntensity };
+    }, [setMousePosition, setMouseVelocity, setWaveIntensity]);
 }

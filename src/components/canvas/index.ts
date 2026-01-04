@@ -9,9 +9,10 @@ export { default as SpaceScene } from './SpaceScene';
 
 // Objects
 export { default as Starfield } from './objects/Starfield';
+export { default as CosmicDust } from './objects/CosmicDust';
 export { default as Planets } from './objects/Planets';
 export { default as AsteroidField } from './objects/AsteroidField';
 export { default as Galaxy } from './objects/Galaxy';
 
 // Effects
-export { default as AmbientGlow } from './effects/AmbientGlow';
+export { default as NebulaGlow } from './effects/NebulaGlow';

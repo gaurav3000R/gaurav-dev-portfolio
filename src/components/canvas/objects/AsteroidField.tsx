@@ -3,36 +3,41 @@
 import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useSpaceStore } from '@/store/spaceStore';
 
 /**
  * AsteroidField Component
  * 
  * Sparse asteroid field with:
- * - Natural drift using Perlin/simplex-like noise
- * - Random rotation on multiple axes
- * - Limited count for performance (30-50 asteroids)
- * - No fast movement, no collisions
+ * - Noise-based drift and rotation
  * - Irregular shapes for realism
+ * - Scroll-based parallax
+ * - Limited count for performance (35 asteroids)
+ * - No fast movement, no collisions
+ * - Instanced rendering
  */
 export default function AsteroidField() {
     const instancedMeshRef = useRef<THREE.InstancedMesh>(null);
-    const count = 40;
+    const count = 35;
+
+    // Get scroll progress
+    const scrollProgress = useSpaceStore((state) => state.scrollProgress);
 
     // Generate asteroid data
     const asteroidData = useMemo(() => {
         const data = [];
 
         for (let i = 0; i < count; i++) {
-            // Distribute in a loose field
+            // Distribute in a loose, sparse field
             const angle = Math.random() * Math.PI * 2;
-            const distance = 100 + Math.random() * 150;
-            const height = (Math.random() - 0.5) * 80;
+            const distance = 120 + Math.random() * 180;
+            const height = (Math.random() - 0.5) * 100;
 
             data.push({
                 position: new THREE.Vector3(
                     Math.cos(angle) * distance,
                     height,
-                    Math.sin(angle) * distance - 200
+                    Math.sin(angle) * distance - 250
                 ),
                 rotation: new THREE.Euler(
                     Math.random() * Math.PI,
@@ -40,13 +45,13 @@ export default function AsteroidField() {
                     Math.random() * Math.PI
                 ),
                 rotationSpeed: new THREE.Vector3(
-                    (Math.random() - 0.5) * 0.0002,
-                    (Math.random() - 0.5) * 0.0002,
-                    (Math.random() - 0.5) * 0.0002
+                    (Math.random() - 0.5) * 0.00015,
+                    (Math.random() - 0.5) * 0.00015,
+                    (Math.random() - 0.5) * 0.00015
                 ),
-                scale: 0.5 + Math.random() * 2,
+                scale: 0.6 + Math.random() * 2.2,
                 driftPhase: Math.random() * Math.PI * 2,
-                driftSpeed: 0.00005 + Math.random() * 0.00005,
+                driftSpeed: 0.00004 + Math.random() * 0.00004,
             });
         }
 
@@ -66,7 +71,7 @@ export default function AsteroidField() {
                 positions.getZ(i)
             );
 
-            vertex.multiplyScalar(0.8 + Math.random() * 0.4);
+            vertex.multiplyScalar(0.75 + Math.random() * 0.5);
             positions.setXYZ(i, vertex.x, vertex.y, vertex.z);
         }
 
@@ -74,7 +79,7 @@ export default function AsteroidField() {
         return geo;
     }, []);
 
-    // Animate asteroids: drift and rotation
+    // Animate asteroids: noise-based drift, rotation, and scroll parallax
     useFrame((state) => {
         if (!instancedMeshRef.current) return;
 
@@ -85,17 +90,20 @@ export default function AsteroidField() {
         const scale = new THREE.Vector3();
 
         asteroidData.forEach((asteroid, i) => {
-            // Natural drift using sine waves (Perlin-like)
-            const driftX = Math.sin(time * asteroid.driftSpeed + asteroid.driftPhase) * 2;
-            const driftY = Math.cos(time * asteroid.driftSpeed * 0.7 + asteroid.driftPhase) * 1.5;
-            const driftZ = Math.sin(time * asteroid.driftSpeed * 0.5 + asteroid.driftPhase) * 1;
+            // Noise-based drift using sine waves (Perlin-like)
+            const driftX = Math.sin(time * asteroid.driftSpeed + asteroid.driftPhase) * 2.5;
+            const driftY = Math.cos(time * asteroid.driftSpeed * 0.7 + asteroid.driftPhase) * 2;
+            const driftZ = Math.sin(time * asteroid.driftSpeed * 0.5 + asteroid.driftPhase) * 1.5;
+
+            // Scroll parallax
+            const scrollOffset = scrollProgress * 40;
 
             position.copy(asteroid.position);
             position.x += driftX;
             position.y += driftY;
-            position.z += driftZ;
+            position.z += driftZ + scrollOffset;
 
-            // Continuous rotation
+            // Continuous slow rotation
             rotation.set(
                 asteroid.rotation.x + time * asteroid.rotationSpeed.x,
                 asteroid.rotation.y + time * asteroid.rotationSpeed.y,
@@ -119,10 +127,10 @@ export default function AsteroidField() {
         >
             <meshStandardMaterial
                 color="#3a3a3a"
-                roughness={0.9}
-                metalness={0.1}
+                roughness={0.92}
+                metalness={0.08}
                 emissive="#0a0a0a"
-                emissiveIntensity={0.1}
+                emissiveIntensity={0.08}
             />
         </instancedMesh>
     );
