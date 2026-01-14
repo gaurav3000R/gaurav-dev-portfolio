@@ -1,7 +1,7 @@
 'use client';
 
 import { Canvas } from '@react-three/fiber';
-import { Suspense, useEffect } from 'react';
+import { Suspense } from 'react';
 import SpaceScene from './SpaceScene';
 import { useMouseInteraction } from '@/lib/hooks/useMouseInteraction';
 import { useScrollIntegration } from '@/lib/hooks/useScrollIntegration';
@@ -9,49 +9,33 @@ import { useScrollIntegration } from '@/lib/hooks/useScrollIntegration';
 /**
  * SpaceBackground Component
  * 
- * Professional cinematic 3D space background system.
- * 
- * Features:
- * - Deep space gradient base layer
- * - Multi-layer starfield with parallax
- * - Cosmic dust particles
- * - Nebula ambient lighting
- * - Distant spiral galaxy
- * - 1-3 planets with slow drift
- * - Sparse asteroid field
- * - Mouse interaction (parallax + wave)
- * - Scroll integration
- * - Audio hooks (no autoplay)
- * 
- * Performance:
- * - 60 FPS target
- * - Adaptive DPR
- * - Instanced rendering
- * - Optimized shaders
+ * Cinematic 3D space background with:
+ * - Deep space gradient (near-black to deep-blue)
+ * - Subtle fog for depth falloff
+ * - 60 FPS target performance
  */
 export default function SpaceBackground() {
-    // Initialize interaction hooks at component level
-    // This ensures they start immediately, not just on hover
     useMouseInteraction();
     useScrollIntegration();
 
     return (
         <div
-            className="fixed inset-0 bg-gradient-to-b from-[#000510] to-[#000000]"
+            className="fixed inset-0"
             style={{
                 zIndex: 0,
-                pointerEvents: 'none' // Allow mouse events to pass through to content
+                pointerEvents: 'none',
+                background: 'linear-gradient(180deg, #020810 0%, #000205 50%, #000000 100%)',
             }}
         >
             <Canvas
-                frameloop="always" // Ensure continuous rendering, not demand-based
+                frameloop="always"
                 camera={{
-                    position: [0, 0, 50],
-                    fov: 45,
+                    position: [0, 0, 60],
+                    fov: 50,
                     near: 0.1,
                     far: 2000,
                 }}
-                dpr={[1, 2]}
+                dpr={[1, 1.5]}
                 performance={{ min: 0.5 }}
                 gl={{
                     antialias: true,
@@ -61,11 +45,11 @@ export default function SpaceBackground() {
                 style={{
                     width: '100%',
                     height: '100%',
-                    pointerEvents: 'none' // Canvas doesn't block mouse events
+                    pointerEvents: 'none',
                 }}
             >
-                {/* Subtle fog for depth */}
-                <fog attach="fog" args={['#000510', 100, 1500]} />
+                {/* Deep fog for infinite depth feel */}
+                <fog attach="fog" args={['#020810', 80, 800]} />
 
                 <Suspense fallback={null}>
                     <SpaceScene />

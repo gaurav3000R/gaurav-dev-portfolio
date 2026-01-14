@@ -2,136 +2,81 @@
 
 import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { useSpaceStore } from '@/store/spaceStore';
 
 /**
- * AsteroidField Component
+ * AsteroidField - Sparse asteroid field using 3D models
  * 
- * Sparse asteroid field with:
- * - Noise-based drift and rotation
- * - Irregular shapes for realism
- * - Scroll-based parallax
- * - Limited count for performance (35 asteroids)
+ * Features:
+ * - Uses actual GLTF models
+ * - Slow noise-based drift and rotation
  * - No fast movement, no collisions
- * - Instanced rendering
  */
 export default function AsteroidField() {
-    const instancedMeshRef = useRef<THREE.InstancedMesh>(null);
-    const count = 35;
+    const { scene: asteroidModel } = useGLTF('/3d-modals/asteroid_low_poly/scene.gltf');
+    const { scene: spaceRocksModel } = useGLTF('/3d-modals/space_rocks/scene.gltf');
 
-    // Get scroll progress
+    const configs = useMemo(() => [
+        { pos: [-35, 12, -40] as [number, number, number], scale: 1.0, model: 'asteroid' },
+        { pos: [40, -18, -55] as [number, number, number], scale: 1.4, model: 'rocks' },
+        { pos: [-50, -25, -70] as [number, number, number], scale: 1.8, model: 'asteroid' },
+        { pos: [55, 20, -45] as [number, number, number], scale: 1.2, model: 'rocks' },
+        { pos: [-20, 30, -80] as [number, number, number], scale: 0.8, model: 'asteroid' },
+        { pos: [30, -30, -35] as [number, number, number], scale: 1.1, model: 'rocks' },
+    ], []);
+
+    return (
+        <group>
+            {configs.map((config, i) => (
+                <AsteroidInstance
+                    key={i}
+                    model={config.model === 'asteroid' ? asteroidModel : spaceRocksModel}
+                    position={config.pos}
+                    scale={config.scale}
+                    index={i}
+                />
+            ))}
+        </group>
+    );
+}
+
+interface AsteroidInstanceProps {
+    model: THREE.Object3D;
+    position: [number, number, number];
+    scale: number;
+    index: number;
+}
+
+function AsteroidInstance({ model, position, scale, index }: AsteroidInstanceProps) {
+    const ref = useRef<THREE.Group>(null);
     const scrollProgress = useSpaceStore((state) => state.scrollProgress);
+    const clonedModel = useMemo(() => model.clone(), [model]);
+    const phase = useMemo(() => index * 1.3, [index]);
 
-    // Generate asteroid data
-    const asteroidData = useMemo(() => {
-        const data = [];
-
-        for (let i = 0; i < count; i++) {
-            // Distribute in a loose, sparse field
-            const angle = Math.random() * Math.PI * 2;
-            const distance = 120 + Math.random() * 180;
-            const height = (Math.random() - 0.5) * 100;
-
-            data.push({
-                position: new THREE.Vector3(
-                    Math.cos(angle) * distance,
-                    height,
-                    Math.sin(angle) * distance - 250
-                ),
-                rotation: new THREE.Euler(
-                    Math.random() * Math.PI,
-                    Math.random() * Math.PI,
-                    Math.random() * Math.PI
-                ),
-                rotationSpeed: new THREE.Vector3(
-                    (Math.random() - 0.5) * 0.00015,
-                    (Math.random() - 0.5) * 0.00015,
-                    (Math.random() - 0.5) * 0.00015
-                ),
-                scale: 0.6 + Math.random() * 2.2,
-                driftPhase: Math.random() * Math.PI * 2,
-                driftSpeed: 0.00004 + Math.random() * 0.00004,
-            });
-        }
-
-        return data;
-    }, [count]);
-
-    // Create irregular asteroid geometry
-    const asteroidGeometry = useMemo(() => {
-        const geo = new THREE.IcosahedronGeometry(1, 0);
-        const positions = geo.attributes.position;
-
-        // Randomize vertices for irregular shape
-        for (let i = 0; i < positions.count; i++) {
-            const vertex = new THREE.Vector3(
-                positions.getX(i),
-                positions.getY(i),
-                positions.getZ(i)
-            );
-
-            vertex.multiplyScalar(0.75 + Math.random() * 0.5);
-            positions.setXYZ(i, vertex.x, vertex.y, vertex.z);
-        }
-
-        geo.computeVertexNormals();
-        return geo;
-    }, []);
-
-    // Animate asteroids: noise-based drift, rotation, and scroll parallax
     useFrame((state) => {
-        if (!instancedMeshRef.current) return;
-
+        if (!ref.current) return;
         const time = state.clock.getElapsedTime();
-        const matrix = new THREE.Matrix4();
-        const rotation = new THREE.Euler();
-        const position = new THREE.Vector3();
-        const scale = new THREE.Vector3();
 
-        asteroidData.forEach((asteroid, i) => {
-            // Noise-based drift using sine waves (Perlin-like)
-            const driftX = Math.sin(time * asteroid.driftSpeed + asteroid.driftPhase) * 2.5;
-            const driftY = Math.cos(time * asteroid.driftSpeed * 0.7 + asteroid.driftPhase) * 2;
-            const driftZ = Math.sin(time * asteroid.driftSpeed * 0.5 + asteroid.driftPhase) * 1.5;
+        // Slow noise-based drift
+        const driftX = Math.sin(time * 0.0008 + phase) * 1.5;
+        const driftY = Math.cos(time * 0.0006 + phase * 0.7) * 1.0;
+        const driftZ = Math.sin(time * 0.0004 + phase * 1.2) * 0.8;
 
-            // Scroll parallax
-            const scrollOffset = scrollProgress * 40;
+        ref.current.position.x = position[0] + driftX;
+        ref.current.position.y = position[1] + driftY;
+        ref.current.position.z = position[2] + driftZ + scrollProgress * 10;
 
-            position.copy(asteroid.position);
-            position.x += driftX;
-            position.y += driftY;
-            position.z += driftZ + scrollOffset;
-
-            // Continuous slow rotation
-            rotation.set(
-                asteroid.rotation.x + time * asteroid.rotationSpeed.x,
-                asteroid.rotation.y + time * asteroid.rotationSpeed.y,
-                asteroid.rotation.z + time * asteroid.rotationSpeed.z
-            );
-
-            scale.setScalar(asteroid.scale);
-
-            matrix.compose(position, new THREE.Quaternion().setFromEuler(rotation), scale);
-            instancedMeshRef.current!.setMatrixAt(i, matrix);
-        });
-
-        instancedMeshRef.current.instanceMatrix.needsUpdate = true;
+        // Very slow tumbling rotation
+        ref.current.rotation.x += 0.0002;
+        ref.current.rotation.y += 0.0003;
+        ref.current.rotation.z += 0.0001;
     });
 
     return (
-        <instancedMesh
-            ref={instancedMeshRef}
-            args={[asteroidGeometry, undefined, count]}
-            frustumCulled={false}
-        >
-            <meshStandardMaterial
-                color="#3a3a3a"
-                roughness={0.92}
-                metalness={0.08}
-                emissive="#0a0a0a"
-                emissiveIntensity={0.08}
-            />
-        </instancedMesh>
+        <group ref={ref} position={position} scale={scale}>
+            <primitive object={clonedModel} />
+        </group>
     );
 }

@@ -5,10 +5,10 @@ import { useSpaceStore } from '@/store/spaceStore';
 /**
  * useMouseInteraction Hook
  * 
- * Tracks mouse movement and calculates:
- * - Normalized position for camera parallax
- * - Velocity for wave effects
- * - Smooth interpolation for cinematic feel
+ * Tracks mouse movement for:
+ * - Subtle camera parallax (space bending feel)
+ * - Gentle wave effects in particles
+ * - No snapping, no jitter
  */
 export function useMouseInteraction() {
     const lastMousePos = useRef(new Vector2(0, 0));
@@ -37,27 +37,25 @@ export function useMouseInteraction() {
 
             setMouseVelocity(velocity);
 
-            // Trigger wave based on velocity (capped for subtlety)
-            if (velocity > 0.01) {
-                setWaveIntensity(Math.min(velocity * 1.5, 0.25));
+            // Subtle wave trigger (much lower intensity)
+            if (velocity > 0.015) {
+                setWaveIntensity(Math.min(velocity * 0.8, 0.12));
             }
         };
 
-        // Smooth interpolation loop
+        // Very smooth interpolation loop
         const animate = () => {
-            // Lerp for smooth camera movement
-            currentPos.current.lerp(targetPos.current, 0.08);
-
+            // Slower lerp for cinematic feel
+            currentPos.current.lerp(targetPos.current, 0.04);
             setMousePosition(currentPos.current.x, currentPos.current.y);
-
             animationFrame = requestAnimationFrame(animate);
         };
 
-        // Decay wave intensity over time
+        // Slow decay of wave intensity
         decayInterval = setInterval(() => {
             const currentIntensity = useSpaceStore.getState().waveIntensity;
-            setWaveIntensity(Math.max(currentIntensity * 0.94, 0));
-        }, 50);
+            setWaveIntensity(Math.max(currentIntensity * 0.92, 0));
+        }, 60);
 
         window.addEventListener('mousemove', handleMouseMove, { passive: true });
         animate();

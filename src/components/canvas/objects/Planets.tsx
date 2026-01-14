@@ -7,60 +7,45 @@ import * as THREE from 'three';
 import { useSpaceStore } from '@/store/spaceStore';
 
 /**
- * Planets Component
+ * Planets - 2-3 distant planets
  * 
- * 1-3 distant planets with:
- * - Extremely slow orbital movement (space-scale realism)
- * - Gentle Z-depth drift with scroll
- * - Physically based materials with soft rim lighting
- * - Subtle atmospheric glow
- * - No cartoon colors or sharp textures
+ * Features:
+ * - Extremely slow orbital movement
+ * - PBR materials with rim lighting
+ * - Soft atmospheric glow
+ * - No fast orbits, no exaggerated scale
  */
 export default function Planets() {
     return (
         <group>
-            {/* Planet 1: Large gas giant in distance */}
             <Planet
-                position={[-140, 50, -450]}
-                radius={28}
-                color="#4a5f7a"
-                emissive="#1a2332"
-                orbitSpeed={0.00004}
-                orbitRadius={35}
-                rotationSpeed={0.00008}
-                driftSpeed={0.3}
+                position={[-100, 35, -350]}
+                radius={22}
+                color="#4a5a70"
+                emissive="#1a2028"
+                orbitSpeed={0.000008}
+                orbitRadius={20}
             />
-
-            {/* Planet 2: Rocky planet, closer */}
             <Planet
-                position={[160, -70, -320]}
+                position={[120, -50, -280]}
+                radius={15}
+                color="#5a4a48"
+                emissive="#201818"
+                orbitSpeed={0.000012}
+                orbitRadius={15}
+            />
+            <Planet
+                position={[60, 70, -420]}
                 radius={18}
-                color="#6b5d5a"
-                emissive="#2a1f1d"
-                orbitSpeed={0.00006}
-                orbitRadius={25}
-                rotationSpeed={0.00012}
-                driftSpeed={0.5}
-            />
-
-            {/* Planet 3: Ice planet, far distance */}
-            <Planet
-                position={[90, 90, -550]}
-                radius={20}
-                color="#7a8b9e"
-                emissive="#1f2a35"
-                orbitSpeed={0.000025}
-                orbitRadius={18}
-                rotationSpeed={0.00006}
-                driftSpeed={0.2}
+                color="#5a6878"
+                emissive="#181f28"
+                orbitSpeed={0.000005}
+                orbitRadius={12}
             />
         </group>
     );
 }
 
-/**
- * Planet - Individual planet with orbital mechanics and scroll drift
- */
 interface PlanetProps {
     position: [number, number, number];
     radius: number;
@@ -68,76 +53,58 @@ interface PlanetProps {
     emissive: string;
     orbitSpeed: number;
     orbitRadius: number;
-    rotationSpeed: number;
-    driftSpeed: number;
 }
 
-function Planet({
-    position,
-    radius,
-    color,
-    emissive,
-    orbitSpeed,
-    orbitRadius,
-    rotationSpeed,
-    driftSpeed,
-}: PlanetProps) {
+function Planet({ position, radius, color, emissive, orbitSpeed, orbitRadius }: PlanetProps) {
     const planetRef = useRef<THREE.Mesh>(null);
-    const orbitRef = useRef<THREE.Group>(null);
-
-    // Get scroll progress for depth drift
+    const groupRef = useRef<THREE.Group>(null);
     const scrollProgress = useSpaceStore((state) => state.scrollProgress);
 
-    // Animate orbital movement, rotation, and scroll drift
     useFrame((state) => {
         const time = state.clock.getElapsedTime();
 
-        if (orbitRef.current) {
-            // Extremely slow orbital movement
-            orbitRef.current.position.x = position[0] + Math.cos(time * orbitSpeed) * orbitRadius;
-            orbitRef.current.position.y = position[1] + Math.sin(time * orbitSpeed * 0.7) * orbitRadius * 0.5;
-
-            // Gentle Z-depth drift with scroll
-            const scrollDrift = scrollProgress * driftSpeed * 50;
-            orbitRef.current.position.z = position[2] + scrollDrift;
+        if (groupRef.current) {
+            // Extremely slow orbital drift
+            groupRef.current.position.x = position[0] + Math.cos(time * orbitSpeed) * orbitRadius;
+            groupRef.current.position.y = position[1] + Math.sin(time * orbitSpeed * 0.7) * orbitRadius * 0.4;
+            
+            // Gentle Z-depth with scroll
+            groupRef.current.position.z = position[2] + scrollProgress * 25;
         }
 
         if (planetRef.current) {
-            // Slow rotation on own axis
-            planetRef.current.rotation.y += rotationSpeed;
-
-            // Very subtle wobble
-            planetRef.current.rotation.x = Math.sin(time * 0.0001) * 0.02;
+            // Very slow self-rotation
+            planetRef.current.rotation.y += 0.00005;
         }
     });
 
     return (
-        <group ref={orbitRef} position={position}>
-            <Sphere ref={planetRef} args={[radius, 64, 64]}>
+        <group ref={groupRef} position={position}>
+            <Sphere ref={planetRef} args={[radius, 48, 48]}>
                 <meshStandardMaterial
                     color={color}
                     emissive={emissive}
-                    emissiveIntensity={0.18}
-                    roughness={0.85}
-                    metalness={0.15}
+                    emissiveIntensity={0.12}
+                    roughness={0.88}
+                    metalness={0.12}
                 />
             </Sphere>
 
-            {/* Soft rim light for atmospheric effect */}
+            {/* Soft rim light */}
             <pointLight
-                position={[radius * 1.6, 0, radius * 1.2]}
-                intensity={0.25}
-                distance={radius * 5}
+                position={[radius * 1.5, 0, radius]}
+                intensity={0.15}
+                distance={radius * 4}
                 color={emissive}
                 decay={2}
             />
 
-            {/* Subtle atmospheric glow */}
-            <Sphere args={[radius * 1.08, 32, 32]}>
+            {/* Atmospheric glow */}
+            <Sphere args={[radius * 1.06, 32, 32]}>
                 <meshBasicMaterial
                     color={emissive}
                     transparent
-                    opacity={0.04}
+                    opacity={0.025}
                     side={THREE.BackSide}
                     blending={THREE.AdditiveBlending}
                 />

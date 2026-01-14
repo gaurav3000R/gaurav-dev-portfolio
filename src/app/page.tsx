@@ -114,7 +114,7 @@ export default function Home() {
         </section>
 
         {/* What I Do Section */}
-        <section className="relative min-h-screen bg-gradient-to-b from-transparent via-black/30 to-transparent px-6 py-32">
+        <section id="what-i-do" className="relative min-h-screen bg-gradient-to-b from-transparent via-black/30 to-transparent px-6 py-32">
           <div className="mx-auto max-w-7xl">
             <div className="mb-16 text-center">
               <div className="mb-4 inline-block rounded-full border border-blue-400/30 bg-blue-400/10 px-4 py-1 text-sm font-semibold text-blue-300">
