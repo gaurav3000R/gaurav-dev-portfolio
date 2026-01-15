@@ -5,6 +5,8 @@ import {
   AnimatedText,
   FloatingElement,
 } from '@/components/ui/AnimatedText';
+import { AudioToggle } from '@/components/ui/AudioToggle';
+import { SoundManager } from '@/components/ui/SoundManager';
 import {
   Smartphone, Globe, Brain, Zap, Building2,
   Code2, Cpu, GitBranch, Layers, Rocket,
@@ -217,6 +219,12 @@ export default function Home() {
     <div className="relative min-h-screen overflow-hidden bg-black">
       {/* Cinematic 3D Space Background */}
       <SpaceBackground />
+
+      {/* Sound Management - Must be inside a component tree */}
+      <SoundManager />
+
+      {/* Audio Toggle Button - Fixed position */}
+      <AudioToggle />
 
       {/* Skip to main content for accessibility */}
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-cosmic-blue focus:text-white focus:rounded">

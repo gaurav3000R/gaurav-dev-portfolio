@@ -8,3 +8,5 @@ export { useMouseInteraction } from './useMouseInteraction';
 export { useScrollIntegration } from './useScrollIntegration';
 export { useSpaceAudio } from './useSpaceAudio';
 export { useScrollAnimation } from './useScrollAnimation';
+export { useSoundEffects } from './useSoundEffects';
+export { useSpaceshipAudio } from './useSpaceshipAudio';
