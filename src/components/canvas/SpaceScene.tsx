@@ -40,20 +40,20 @@ export default function SpaceScene() {
 
         const time = state.clock.getElapsedTime();
 
-        // Mouse parallax - subtle space bending effect
-        const targetRotX = mousePosition.y * 0.006;
-        const targetRotY = mousePosition.x * 0.006;
+        // Mouse parallax - very subtle space bending effect
+        const targetRotX = mousePosition.y * 0.004;
+        const targetRotY = mousePosition.x * 0.004;
 
-        // Smooth interpolation for cinematic feel
-        sceneRef.current.rotation.x += (targetRotX - sceneRef.current.rotation.x) * 0.02;
-        sceneRef.current.rotation.y += (targetRotY - sceneRef.current.rotation.y) * 0.02;
+        // SLOWER interpolation for ultra-smooth cinematic feel
+        sceneRef.current.rotation.x += (targetRotX - sceneRef.current.rotation.x) * 0.01;
+        sceneRef.current.rotation.y += (targetRotY - sceneRef.current.rotation.y) * 0.01;
 
-        // Scroll-based depth movement
-        const targetZ = scrollProgress * 5;
-        sceneRef.current.position.z += (targetZ - sceneRef.current.position.z) * 0.015;
+        // Scroll-based depth movement - slower
+        const targetZ = scrollProgress * 3;
+        sceneRef.current.position.z += (targetZ - sceneRef.current.position.z) * 0.008;
 
         // Very subtle breathing motion for entire scene
-        sceneRef.current.position.y = Math.sin(time * 0.1) * 0.3;
+        sceneRef.current.position.y = Math.sin(time * 0.08) * 0.2;
     });
 
     return (
