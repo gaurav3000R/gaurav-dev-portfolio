@@ -1,18 +1,204 @@
 'use client';
 
-import { useRef, useMemo, useEffect } from 'react';
+import { useRef, useMemo, useEffect, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
 /**
- * SpaceshipFlyby - Starts BEHIND camera (not visible), comes into view, then flies deep
+ * SpaceshipFlyby - Enhanced with cinematic effects
  * 
- * Behavior:
- * - At start: Ship is BEHIND the camera (not visible, too far forward)
- * - As scroll: Ship comes INTO view from behind, passes by, then flies into background
- * - Ends very deep in background (large Z depth)
+ * Features:
+ * - Laser Cannons: Fire during dramatic turn phase
+ * - Shield Bubble: Holographic protection effect
+ * - All synchronized with scroll-based animation phases
  */
+
+// ============================================
+// LASER CANNON COMPONENT
+// ============================================
+function LaserCannon({
+    position,
+    direction,
+    active,
+    color = new THREE.Color(1, 0.2, 0.2)
+}: {
+    position: [number, number, number];
+    direction: [number, number, number];
+    active: boolean;
+    color?: THREE.Color;
+}) {
+    const laserRef = useRef<THREE.Group>(null);
+    const beamRef = useRef<THREE.Mesh>(null);
+    const [laserLength, setLaserLength] = useState(0);
+    const [opacity, setOpacity] = useState(0);
+
+    // Create beam geometry
+    const beamGeometry = useMemo(() => {
+        return new THREE.CylinderGeometry(0.02, 0.01, 1, 8);
+    }, []);
+
+    // Beam material
+    const beamMaterial = useMemo(() => {
+        return new THREE.MeshBasicMaterial({
+            color: color,
+            transparent: true,
+            opacity: 0,
+            blending: THREE.AdditiveBlending,
+        });
+    }, [color]);
+
+    // Glow material
+    const glowMaterial = useMemo(() => {
+        return new THREE.MeshBasicMaterial({
+            color: color.clone().multiplyScalar(0.5),
+            transparent: true,
+            opacity: 0,
+            blending: THREE.AdditiveBlending,
+        });
+    }, [color]);
+
+    useFrame((state) => {
+        const time = state.clock.getElapsedTime();
+
+        if (active) {
+            // Extend laser
+            setLaserLength(prev => Math.min(prev + 0.5, 15));
+            setOpacity(prev => Math.min(prev + 0.1, 1));
+        } else {
+            // Retract laser
+            setLaserLength(prev => Math.max(prev - 0.3, 0));
+            setOpacity(prev => Math.max(prev - 0.05, 0));
+        }
+
+        if (beamRef.current && laserLength > 0) {
+            beamRef.current.scale.set(1 + Math.sin(time * 30) * 0.3, laserLength, 1 + Math.sin(time * 30) * 0.3);
+            beamRef.current.position.set(0, laserLength / 2, 0);
+            (beamRef.current.material as THREE.MeshBasicMaterial).opacity = opacity * (0.8 + Math.sin(time * 40) * 0.2);
+        }
+
+        if (laserRef.current) {
+            // Point laser in direction
+            const dir = new THREE.Vector3(...direction).normalize();
+            laserRef.current.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
+        }
+    });
+
+    if (laserLength <= 0 && opacity <= 0) return null;
+
+    return (
+        <group ref={laserRef} position={position}>
+            {/* Main beam */}
+            <mesh ref={beamRef} geometry={beamGeometry} material={beamMaterial} />
+
+            {/* Muzzle flash */}
+            <mesh position={[0, 0, 0]}>
+                <sphereGeometry args={[0.08, 8, 8]} />
+                <meshBasicMaterial
+                    color={color}
+                    transparent
+                    opacity={opacity * 0.8}
+                    blending={THREE.AdditiveBlending}
+                />
+            </mesh>
+        </group>
+    );
+}
+
+// ============================================
+// SHIELD BUBBLE COMPONENT
+// ============================================
+function ShieldBubble({
+    active,
+    radius = 1.5,
+    color = new THREE.Color(0.2, 0.8, 1.0)
+}: {
+    active: boolean;
+    radius?: number;
+    color?: THREE.Color;
+}) {
+    const shieldRef = useRef<THREE.Mesh>(null);
+    const innerShieldRef = useRef<THREE.Mesh>(null);
+    const [shieldScale, setShieldScale] = useState(0);
+    const [shieldOpacity, setShieldOpacity] = useState(0);
+
+    // Shield geometry
+    const shieldGeometry = useMemo(() => {
+        return new THREE.IcosahedronGeometry(radius, 2);
+    }, [radius]);
+
+    // Hexagonal pattern shader material
+    const shieldMaterial = useMemo(() => {
+        return new THREE.MeshBasicMaterial({
+            color: color,
+            transparent: true,
+            opacity: 0,
+            wireframe: true,
+            blending: THREE.AdditiveBlending,
+        });
+    }, [color]);
+
+    // Inner glow material
+    const innerMaterial = useMemo(() => {
+        return new THREE.MeshBasicMaterial({
+            color: color.clone().multiplyScalar(0.3),
+            transparent: true,
+            opacity: 0,
+            side: THREE.BackSide,
+            blending: THREE.AdditiveBlending,
+        });
+    }, [color]);
+
+    useFrame((state) => {
+        const time = state.clock.getElapsedTime();
+
+        if (active) {
+            // Expand shield
+            setShieldScale(prev => Math.min(prev + 0.08, 1));
+            setShieldOpacity(prev => Math.min(prev + 0.05, 0.6));
+        } else {
+            // Contract shield
+            setShieldScale(prev => Math.max(prev - 0.04, 0));
+            setShieldOpacity(prev => Math.max(prev - 0.03, 0));
+        }
+
+        if (shieldRef.current && shieldScale > 0) {
+            // Pulsing scale
+            const pulse = shieldScale * (1 + Math.sin(time * 5) * 0.05);
+            shieldRef.current.scale.setScalar(pulse);
+            shieldRef.current.rotation.x = time * 0.2;
+            shieldRef.current.rotation.y = time * 0.3;
+
+            // Flickering opacity
+            const flicker = shieldOpacity * (0.7 + Math.sin(time * 15) * 0.15 + Math.sin(time * 23) * 0.15);
+            (shieldRef.current.material as THREE.MeshBasicMaterial).opacity = flicker;
+        }
+
+        if (innerShieldRef.current && shieldScale > 0) {
+            innerShieldRef.current.scale.setScalar(shieldScale * 0.98);
+            (innerShieldRef.current.material as THREE.MeshBasicMaterial).opacity = shieldOpacity * 0.2;
+        }
+    });
+
+    if (shieldScale <= 0 && shieldOpacity <= 0) return null;
+
+    return (
+        <group>
+            {/* Outer wireframe shield */}
+            <mesh ref={shieldRef} geometry={shieldGeometry} material={shieldMaterial} />
+
+            {/* Inner glow */}
+            <mesh ref={innerShieldRef}>
+                <sphereGeometry args={[radius * 0.95, 32, 32]} />
+                <primitive object={innerMaterial} attach="material" />
+            </mesh>
+        </group>
+    );
+}
+
+// ============================================
+// MAIN SPACESHIP FLYBY COMPONENT
+// ============================================
 export default function SpaceshipFlyby() {
     const { scene } = useGLTF('/3d-modals/spaceship/scene.gltf');
     const groupRef = useRef<THREE.Group>(null);
@@ -23,6 +209,11 @@ export default function SpaceshipFlyby() {
     const currentPosition = useRef(new THREE.Vector3(-20, -5, 80));
     const currentRotation = useRef(new THREE.Euler(0.1, Math.PI * 0.6, 0));
     const currentScale = useRef(15);
+
+    // Effect states
+    const [laserActive, setLaserActive] = useState(false);
+    const [shieldActive, setShieldActive] = useState(false);
+    const [currentPhase, setCurrentPhase] = useState(0);
 
     // Clone and prepare the model
     const clonedScene = useMemo(() => {
@@ -91,7 +282,7 @@ export default function SpaceshipFlyby() {
         // PHASE-BASED CINEMATIC ANIMATION
         // Phase 1 (0-0.25): Come from behind camera into view (BIG and CLOSE)
         // Phase 2 (0.25-0.45): Pass by camera, start turning
-        // Phase 3 (0.45-0.6): DRAMATIC TURN
+        // Phase 3 (0.45-0.6): DRAMATIC TURN + LASER FIRE + SHIELD
         // Phase 4 (0.6-1.0): Fly DEEP into background
         // ============================================
 
@@ -104,60 +295,79 @@ export default function SpaceshipFlyby() {
             const phase = t / 0.25;
             const phaseEase = easeOutQuad(phase);
 
-            targetX = -20 + 25 * phaseEase; // -20 -> 5
-            targetY = -5 + 10 * phaseEase; // -5 -> 5
-            targetZ = 80 - 70 * phaseEase; // 80 -> 10 (from behind to in front)
+            targetX = -20 + 25 * phaseEase;
+            targetY = -5 + 10 * phaseEase;
+            targetZ = 80 - 70 * phaseEase;
 
-            targetYaw = Math.PI * 0.6; // Facing diagonally
+            targetYaw = Math.PI * 0.6;
             targetPitch = 0.1 - 0.1 * phaseEase;
             targetRoll = 0;
 
-            targetScale = 15; // VERY BIG when close
+            targetScale = 15;
+
+            // Effects: Warming up
+            setCurrentPhase(1);
+            setLaserActive(false);
+            setShieldActive(false);
 
         } else if (t < 0.45) {
             // Phase 2: Passing by camera, very close and big
             const phase = (t - 0.25) / 0.2;
 
-            targetX = 5 + 20 * phase; // 5 -> 25 (continue right)
-            targetY = 5 + 5 * phase; // 5 -> 10
-            targetZ = 10 - 60 * phase; // 10 -> -50
+            targetX = 5 + 20 * phase;
+            targetY = 5 + 5 * phase;
+            targetZ = 10 - 60 * phase;
 
             targetYaw = Math.PI * 0.6 + Math.PI * 0.15 * phase;
             targetPitch = 0;
             targetRoll = 0.05 * phase;
 
-            targetScale = 15 - 3 * phase; // 15 -> 12 (still big)
+            targetScale = 15 - 3 * phase;
+
+            // Effects: Preparing for action
+            setCurrentPhase(2);
+            setLaserActive(false);
+            setShieldActive(phase > 0.7); // Shield starts activating
 
         } else if (t < 0.6) {
-            // Phase 3: DRAMATIC TURN
+            // Phase 3: DRAMATIC TURN - FIRE LASERS!
             const phase = (t - 0.45) / 0.15;
             const turnEase = easeInOutQuad(phase);
 
-            targetX = 25 - 5 * phase; // 25 -> 20
-            targetY = 10 + 8 * turnEase; // 10 -> 18
-            targetZ = -50 - 80 * phase; // -50 -> -130
+            targetX = 25 - 5 * phase;
+            targetY = 10 + 8 * turnEase;
+            targetZ = -50 - 80 * phase;
 
-            // THE DRAMATIC BANK!
             targetYaw = Math.PI * 0.75 + Math.PI * 0.25 * turnEase;
             targetPitch = -0.15 * turnEase;
-            targetRoll = 0.05 + 0.45 * Math.sin(phase * Math.PI); // Heavy bank
+            targetRoll = 0.05 + 0.45 * Math.sin(phase * Math.PI);
 
-            targetScale = 12 - 4 * phase; // 12 -> 8
+            targetScale = 12 - 4 * phase;
+
+            // Effects: MAX POWER! Lasers firing, shield up!
+            setCurrentPhase(3);
+            setLaserActive(true);
+            setShieldActive(true);
 
         } else {
             // Phase 4: Fly DEEP into background
             const phase = (t - 0.6) / 0.4;
             const flyEase = easeOutQuad(phase);
 
-            targetX = 20 - 18 * flyEase; // 20 -> 2
-            targetY = 18 + 15 * flyEase; // 18 -> 33
-            targetZ = -130 - 500 * flyEase; // -130 -> -630 (VERY DEEP!)
+            targetX = 20 - 18 * flyEase;
+            targetY = 18 + 15 * flyEase;
+            targetZ = -130 - 500 * flyEase;
 
-            targetYaw = Math.PI; // Facing directly away
+            targetYaw = Math.PI;
             targetPitch = -0.2;
             targetRoll = 0.05 * (1 - flyEase);
 
-            targetScale = 8 - 5 * flyEase; // 8 -> 3 (tiny in distance)
+            targetScale = 8 - 5 * flyEase;
+
+            // Effects: Retreating
+            setCurrentPhase(4);
+            setLaserActive(phase < 0.3); // Stop firing as we retreat
+            setShieldActive(phase < 0.5); // Shield deactivates
         }
 
         // Smooth interpolation
@@ -179,7 +389,40 @@ export default function SpaceshipFlyby() {
 
     return (
         <group ref={groupRef}>
+            {/* Main spaceship model */}
             <primitive object={clonedScene} />
+
+            {/* ========== LASER CANNONS ========== */}
+            {/* Left wing cannon */}
+            <LaserCannon
+                position={[-0.4, 0, -0.2]}
+                direction={[0, 0, -1]}
+                active={laserActive}
+                color={new THREE.Color(1, 0.3, 0.1)}
+            />
+
+            {/* Right wing cannon */}
+            <LaserCannon
+                position={[0.4, 0, -0.2]}
+                direction={[0, 0, -1]}
+                active={laserActive}
+                color={new THREE.Color(1, 0.3, 0.1)}
+            />
+
+            {/* Center cannon (green for variety) */}
+            <LaserCannon
+                position={[0, -0.05, -0.3]}
+                direction={[0, -0.1, -1]}
+                active={laserActive && currentPhase === 3}
+                color={new THREE.Color(0.2, 1, 0.3)}
+            />
+
+            {/* ========== SHIELD BUBBLE ========== */}
+            <ShieldBubble
+                active={shieldActive}
+                radius={0.8}
+                color={new THREE.Color(0.3, 0.7, 1.0)}
+            />
         </group>
     );
 }
