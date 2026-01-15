@@ -1,28 +1,24 @@
 'use client';
 
-import { useRef, useEffect, useState, useMemo } from 'react';
+import { useRef, useMemo, useEffect, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 /**
- * SpaceshipFlyby - EPIC Cinematic Spaceship Pass
+ * SpaceshipFlyby - Ship flies forward into the background on scroll
  * 
- * Avatar/Interstellar style dramatic flyby:
- * - Massive 3D spaceship model fills the entire screen
- * - Dramatic slow motion pass
- * - Engine glow and light streaks
+ * Behavior:
+ * - NOT visible on hero section
+ * - When scrolling to second section, ship appears and flies FORWARD into background
+ * - Ship starts close to camera and flies away into the distance
  */
 export default function SpaceshipFlyby() {
     const { scene } = useGLTF('/3d-modals/spaceship/scene.gltf');
     const groupRef = useRef<THREE.Group>(null);
-    const [flybyProgress, setFlybyProgress] = useState(0);
+    const [flyProgress, setFlyProgress] = useState(0);
 
-    // Clone model once and fix materials - remove background planes
+    // Clone and prepare the model
     const clonedScene = useMemo(() => {
         const clone = scene.clone();
         const objectsToRemove: THREE.Object3D[] = [];
@@ -32,63 +28,60 @@ export default function SpaceshipFlyby() {
                 const geometry = child.geometry;
                 const material = child.material as THREE.Material;
 
-                // Remove planes/quads (background elements)
+                // Remove background planes
                 if (geometry) {
                     const posAttr = geometry.getAttribute('position');
-                    // Planes typically have 4 or 6 vertices
                     if (posAttr && (posAttr.count === 4 || posAttr.count === 6)) {
                         objectsToRemove.push(child);
                         return;
                     }
                 }
 
-                // Remove objects with names suggesting background
                 const name = child.name.toLowerCase();
-                if (name.includes('plane') || name.includes('background') || name.includes('floor') || name.includes('ground')) {
+                if (name.includes('plane') || name.includes('background') || name.includes('floor')) {
                     objectsToRemove.push(child);
                     return;
                 }
 
-                // Fix material - ensure proper rendering
                 if (material) {
                     const mat = material as THREE.MeshStandardMaterial;
                     mat.side = THREE.FrontSide;
                     mat.transparent = false;
                     mat.depthWrite = true;
+                    mat.emissiveIntensity = 0.2;
                 }
             }
         });
 
-        // Remove background objects
-        objectsToRemove.forEach(obj => {
-            if (obj.parent) {
-                obj.parent.remove(obj);
-            }
-        });
-
+        objectsToRemove.forEach(obj => obj.parent?.remove(obj));
         return clone;
     }, [scene]);
 
+    // Listen to scroll and trigger when reaching second section
     useEffect(() => {
-        const whatIDoSection = document.getElementById('what-i-do');
-        if (!whatIDoSection) {
-            console.log('SpaceshipFlyby: what-i-do section not found');
-            return;
-        }
+        const handleScroll = () => {
+            const heroSection = document.querySelector('section');
+            if (!heroSection) return;
 
-        console.log('SpaceshipFlyby: ScrollTrigger initialized');
+            const heroHeight = heroSection.offsetHeight;
+            const scrollY = window.scrollY;
 
-        const trigger = ScrollTrigger.create({
-            trigger: whatIDoSection,
-            start: 'top 100%',
-            end: 'bottom 0%',
-            scrub: 1,
-            onUpdate: (self) => {
-                setFlybyProgress(self.progress);
-            },
-        });
+            // Start animation when scrolled past hero section
+            // Progress from 0 to 1 as we scroll through the second section
+            if (scrollY < heroHeight * 0.8) {
+                setFlyProgress(0);
+            } else {
+                const progressStart = heroHeight * 0.8;
+                const progressRange = heroHeight * 1.5; // Animation plays over 1.5x hero height
+                const progress = Math.min(1, (scrollY - progressStart) / progressRange);
+                setFlyProgress(progress);
+            }
+        };
 
-        return () => trigger.kill();
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll(); // Initial check
+
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     useFrame((state) => {
@@ -96,222 +89,184 @@ export default function SpaceshipFlyby() {
 
         const time = state.clock.getElapsedTime();
 
-        // Epic cinematic easing - slow start, dramatic middle, slow exit
-        const eased = epicEase(flybyProgress);
+        // Hide if no progress
+        if (flyProgress <= 0) {
+            groupRef.current.visible = false;
+            return;
+        }
 
-        // MASSIVE SCALE - ship fills the screen
-        // Start far away, come VERY close, exit far
-        const distanceCurve = Math.sin(eased * Math.PI); // 0 -> 1 -> 0
+        groupRef.current.visible = true;
 
-        // Position: Dramatic diagonal sweep across entire viewport
-        // Phase 1 (0-0.3): Enter from bottom-right, far away
-        // Phase 2 (0.3-0.7): Pass VERY close overhead, filling screen
-        // Phase 3 (0.7-1): Exit to top-left
+        // Eased progress for smooth cinematic feel
+        const eased = easeOutCubic(flyProgress);
 
-        const x = 80 - eased * 160; // Right to left
-        const y = -40 + eased * 80 + distanceCurve * 15; // Rise up with arc
-        const z = -100 + distanceCurve * 140; // Come close then recede
+        // ============================================
+        // SHIP FLIES FORWARD INTO THE BACKGROUND
+        // ============================================
+
+        // Start position: In front of camera, slightly to the side
+        // End position: Far in the background, centered
+
+        const startX = -15;  // Start slightly left
+        const endX = 0;      // End at center
+        const x = startX + (endX - startX) * eased;
+
+        const startY = -5;   // Start below
+        const endY = 10;     // End higher up
+        const y = startY + (endY - startY) * eased;
+
+        const startZ = 30;   // Start in FRONT of camera (close)
+        const endZ = -300;   // End FAR in the background
+        const z = startZ + (endZ - startZ) * eased;
 
         groupRef.current.position.set(x, y, z);
 
-        // EPIC SCALE - gets HUGE when close
-        const baseScale = 8;
-        const closeScale = 25; // Massive when overhead
-        const scale = baseScale + distanceCurve * closeScale;
+        // Rotation - ship faces away from camera (flying forward)
+        // Slight tilt up as it flies into distance
+        const pitch = -0.1 - eased * 0.2; // Nose slightly up
+        const yaw = Math.PI; // Facing away from camera
+        const roll = Math.sin(eased * Math.PI) * 0.1; // Slight roll
+
+        groupRef.current.rotation.set(pitch, yaw, roll);
+
+        // Scale - starts BIG (close), gets smaller as it flies away
+        const startScale = 12;
+        const endScale = 3;
+        const scale = startScale - (startScale - endScale) * eased;
         groupRef.current.scale.setScalar(scale);
 
-        // Rotation: Banking turn, nose follows path
-        // Ship tilts as it turns - like a real aircraft
-        const bankAngle = Math.sin(eased * Math.PI * 2) * 0.2;
-        const pitchAngle = (eased - 0.5) * 0.15;
-        const yawAngle = -0.8 + eased * 0.4; // Turning through the frame
-
-        groupRef.current.rotation.set(
-            pitchAngle + Math.sin(time * 8) * 0.003, // Subtle vibration
-            yawAngle,
-            bankAngle + Math.sin(time * 12) * 0.002
-        );
-
-        // Visibility - always show when there's any progress
-        groupRef.current.visible = flybyProgress > 0.02 && flybyProgress < 0.98;
+        // Subtle engine vibration
+        groupRef.current.position.x += Math.sin(time * 25) * 0.03 * (1 - eased);
+        groupRef.current.position.y += Math.cos(time * 20) * 0.02 * (1 - eased);
     });
 
     return (
-        <group ref={groupRef}>
+        <group ref={groupRef} visible={false}>
             {/* The actual 3D spaceship model */}
             <primitive object={clonedScene} />
-
-            {/* MASSIVE engine glow - multiple lights for realism */}
-            <EngineGlow />
-
-            {/* Light streaks / speed lines effect */}
-            <SpeedStreaks progress={flybyProgress} />
-
-            {/* Atmospheric entry heat glow */}
-            <HeatGlow progress={flybyProgress} />
         </group>
     );
 }
 
 /**
- * Engine Glow - Intense thruster lights
+ * Engine Glow - Animated thruster lights facing the camera
  */
-function EngineGlow() {
+function EngineGlow({ progress }: { progress: number }) {
     const light1Ref = useRef<THREE.PointLight>(null);
     const light2Ref = useRef<THREE.PointLight>(null);
+    const glowMeshRef = useRef<THREE.Mesh>(null);
 
     useFrame((state) => {
         const time = state.clock.getElapsedTime();
 
-        // Flickering engine intensity
+        // Intensity increases when ship is visible
+        const intensity = progress > 0 ? 1 : 0;
+
         if (light1Ref.current) {
-            light1Ref.current.intensity = 15 + Math.sin(time * 30) * 5 + Math.random() * 3;
+            light1Ref.current.intensity = (25 + Math.sin(time * 30) * 10 + Math.random() * 4) * intensity;
         }
         if (light2Ref.current) {
-            light2Ref.current.intensity = 10 + Math.cos(time * 25) * 4 + Math.random() * 2;
+            light2Ref.current.intensity = (18 + Math.cos(time * 25) * 6 + Math.random() * 3) * intensity;
+        }
+
+        if (glowMeshRef.current) {
+            const pulse = 0.8 + Math.sin(time * 12) * 0.3;
+            glowMeshRef.current.scale.setScalar(pulse);
         }
     });
 
     return (
-        <group position={[-1.5, 0, -2]}>
-            {/* Main engine - bright blue/white */}
+        // Engine is at the BACK of the ship, facing the camera
+        <group position={[0, 0, 2.5]}>
+            {/* Main engine - bright blue */}
             <pointLight
                 ref={light1Ref}
-                color="#66aaff"
-                intensity={15}
-                distance={50}
-                decay={1.5}
+                color="#60a5fa"
+                intensity={25}
+                distance={80}
+                decay={2}
             />
             {/* Secondary glow - cyan */}
             <pointLight
                 ref={light2Ref}
-                color="#00ffff"
-                intensity={10}
-                distance={80}
-                decay={2}
-                position={[0, 0, -1]}
-            />
-            {/* Ambient engine wash */}
-            <pointLight
-                color="#4488ff"
-                intensity={5}
+                color="#22d3ee"
+                intensity={18}
                 distance={100}
                 decay={2}
-                position={[0, 0, -3]}
+                position={[0, 0, 1]}
             />
+            {/* Orange heat glow */}
+            <pointLight
+                color="#f97316"
+                intensity={12}
+                distance={50}
+                decay={2}
+                position={[0, 0, 0.5]}
+            />
+
+            {/* Engine visual glow - inner core */}
+            <mesh ref={glowMeshRef}>
+                <sphereGeometry args={[0.6, 16, 16]} />
+                <meshBasicMaterial
+                    color="#ffffff"
+                    transparent
+                    opacity={0.95}
+                />
+            </mesh>
+
+            {/* Engine visual glow - blue ring */}
+            <mesh>
+                <sphereGeometry args={[1, 16, 16]} />
+                <meshBasicMaterial
+                    color="#60a5fa"
+                    transparent
+                    opacity={0.6}
+                    blending={THREE.AdditiveBlending}
+                />
+            </mesh>
+
+            {/* Engine visual glow - outer cyan */}
+            <mesh>
+                <sphereGeometry args={[1.5, 16, 16]} />
+                <meshBasicMaterial
+                    color="#22d3ee"
+                    transparent
+                    opacity={0.3}
+                    blending={THREE.AdditiveBlending}
+                />
+            </mesh>
+
+            {/* Engine thrust trail - pointing toward camera */}
+            <mesh position={[0, 0, 3]} rotation={[-Math.PI / 2, 0, 0]}>
+                <coneGeometry args={[1, 6, 16]} />
+                <meshBasicMaterial
+                    color="#3b82f6"
+                    transparent
+                    opacity={0.4}
+                    blending={THREE.AdditiveBlending}
+                />
+            </mesh>
+
+            {/* Larger outer trail */}
+            <mesh position={[0, 0, 5]} rotation={[-Math.PI / 2, 0, 0]}>
+                <coneGeometry args={[1.5, 10, 16]} />
+                <meshBasicMaterial
+                    color="#0ea5e9"
+                    transparent
+                    opacity={0.2}
+                    blending={THREE.AdditiveBlending}
+                />
+            </mesh>
         </group>
     );
 }
 
 /**
- * Speed Streaks - Lines rushing past during close pass
+ * Ease out cubic - fast start, slow end
  */
-function SpeedStreaks({ progress }: { progress: number }) {
-    const streaksRef = useRef<THREE.Points>(null);
-    const count = 200;
-
-    const [positions, velocities] = useMemo(() => {
-        const pos = new Float32Array(count * 3);
-        const vel = new Float32Array(count);
-        for (let i = 0; i < count; i++) {
-            const i3 = i * 3;
-            pos[i3] = (Math.random() - 0.5) * 100;
-            pos[i3 + 1] = (Math.random() - 0.5) * 60;
-            pos[i3 + 2] = Math.random() * 50 - 25;
-            vel[i] = 0.5 + Math.random() * 1.5;
-        }
-        return [pos, vel];
-    }, [count]);
-
-    useFrame(() => {
-        if (!streaksRef.current) return;
-
-        const intensity = Math.sin(progress * Math.PI); // Peak at middle
-        const posArray = streaksRef.current.geometry.attributes.position.array as Float32Array;
-
-        for (let i = 0; i < count; i++) {
-            const i3 = i * 3;
-            // Streaks move backward as ship passes
-            posArray[i3 + 2] -= velocities[i] * intensity * 2;
-
-            // Reset streaks that go too far
-            if (posArray[i3 + 2] < -30) {
-                posArray[i3 + 2] = 25;
-            }
-        }
-
-        streaksRef.current.geometry.attributes.position.needsUpdate = true;
-
-        // Fade based on how close the ship is
-        (streaksRef.current.material as THREE.PointsMaterial).opacity = intensity * 0.4;
-    });
-
-    return (
-        <points ref={streaksRef} position={[0, 0, 10]}>
-            <bufferGeometry>
-                <bufferAttribute
-                    attach="attributes-position"
-                    args={[positions, 3]}
-                />
-            </bufferGeometry>
-            <pointsMaterial
-                color="#ffffff"
-                size={0.08}
-                sizeAttenuation
-                transparent
-                opacity={0}
-                depthWrite={false}
-                blending={THREE.AdditiveBlending}
-            />
-        </points>
-    );
+function easeOutCubic(t: number): number {
+    return 1 - Math.pow(1 - t, 3);
 }
 
-/**
- * Heat Glow - Atmospheric friction glow on leading edges
- */
-function HeatGlow({ progress }: { progress: number }) {
-    const glowRef = useRef<THREE.Mesh>(null);
-
-    useFrame(() => {
-        if (!glowRef.current) return;
-
-        // Glow intensity based on speed (middle of pass = fastest)
-        const speed = Math.sin(progress * Math.PI);
-        (glowRef.current.material as THREE.MeshBasicMaterial).opacity = speed * 0.15;
-    });
-
-    return (
-        <mesh ref={glowRef} position={[2, 0, 1]} rotation={[0, 0, Math.PI / 4]}>
-            <planeGeometry args={[8, 4]} />
-            <meshBasicMaterial
-                color="#ff6600"
-                transparent
-                opacity={0}
-                side={THREE.DoubleSide}
-                blending={THREE.AdditiveBlending}
-                depthWrite={false}
-            />
-        </mesh>
-    );
-}
-
-/**
- * Epic easing - slow dramatic start, fast middle, slow exit
- * Like a breath - inhale, hold, exhale
- */
-function epicEase(t: number): number {
-    // Custom bezier-like curve for cinematic feel
-    if (t < 0.2) {
-        // Slow entrance
-        return Math.pow(t / 0.2, 2) * 0.15;
-    } else if (t < 0.8) {
-        // Main pass - slightly faster
-        const mid = (t - 0.2) / 0.6;
-        return 0.15 + mid * 0.7;
-    } else {
-        // Slow exit
-        const end = (t - 0.8) / 0.2;
-        return 0.85 + Math.pow(end, 0.5) * 0.15;
-    }
-}
+// Preload the model
+useGLTF.preload('/3d-modals/spaceship/scene.gltf');

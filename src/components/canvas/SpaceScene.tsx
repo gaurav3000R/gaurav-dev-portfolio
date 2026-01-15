@@ -16,47 +16,111 @@ import SpaceshipFlyby from './effects/SpaceshipFlyby';
 /**
  * SpaceScene - Main scene orchestrator
  * 
- * Cinematic space environment with:
- * - Very subtle mouse parallax (space bending feel)
- * - All animations time-based
- * - No jitter or snapping
- * - Cinematic spaceship flyby on scroll
+ * All 3D elements synchronized:
+ * - Starfield (procedural)
+ * - Cosmic Dust (procedural particles)
+ * - Planets (procedural spheres)
+ * - Galaxy (procedural spiral)
+ * - Nebula Glow (procedural effect)
+ * - Asteroid Field (GLTF: asteroid_low_poly + space_rocks)
+ * - Spaceship Flyby (GLTF: spaceship)
+ * 
+ * All elements react to:
+ * - Mouse position (parallax)
+ * - Scroll position (depth movement)
+ * - Time (continuous animation)
  */
 export default function SpaceScene() {
     const sceneRef = useRef<Group>(null);
     const mousePosition = useSpaceStore((state) => state.mousePosition);
     const scrollProgress = useSpaceStore((state) => state.scrollProgress);
 
-    useFrame(() => {
+    useFrame((state) => {
         if (!sceneRef.current) return;
 
-        // Very subtle mouse parallax - feels like space bending
-        const targetRotX = mousePosition.y * 0.008;
-        const targetRotY = mousePosition.x * 0.008;
+        const time = state.clock.getElapsedTime();
+
+        // Mouse parallax - subtle space bending effect
+        const targetRotX = mousePosition.y * 0.006;
+        const targetRotY = mousePosition.x * 0.006;
 
         // Smooth interpolation for cinematic feel
-        sceneRef.current.rotation.x += (targetRotX - sceneRef.current.rotation.x) * 0.015;
-        sceneRef.current.rotation.y += (targetRotY - sceneRef.current.rotation.y) * 0.015;
+        sceneRef.current.rotation.x += (targetRotX - sceneRef.current.rotation.x) * 0.02;
+        sceneRef.current.rotation.y += (targetRotY - sceneRef.current.rotation.y) * 0.02;
 
-        // Subtle scroll depth
-        const targetZ = scrollProgress * 3;
-        sceneRef.current.position.z += (targetZ - sceneRef.current.position.z) * 0.01;
+        // Scroll-based depth movement
+        const targetZ = scrollProgress * 5;
+        sceneRef.current.position.z += (targetZ - sceneRef.current.position.z) * 0.015;
+
+        // Very subtle breathing motion for entire scene
+        sceneRef.current.position.y = Math.sin(time * 0.1) * 0.3;
     });
 
     return (
         <group ref={sceneRef}>
-            {/* Minimal base lighting */}
-            <ambientLight intensity={0.1} color="#ffffff" />
-            <directionalLight position={[10, 10, 5]} intensity={0.5} />
+            {/* Scene Lighting - synchronized for all models */}
 
-            <NebulaGlow />
-            <Starfield />
-            <CosmicDust />
+            {/* Ambient fill light */}
+            <ambientLight intensity={0.15} color="#b8c5d6" />
+
+            {/* Main directional light (sun-like) */}
+            <directionalLight
+                position={[50, 30, 20]}
+                intensity={0.8}
+                color="#ffffff"
+                castShadow={false}
+            />
+
+            {/* Blue rim light from behind */}
+            <directionalLight
+                position={[-30, -10, -50]}
+                intensity={0.4}
+                color="#60a5fa"
+            />
+
+            {/* Purple accent light */}
+            <pointLight
+                position={[0, 50, -100]}
+                intensity={0.5}
+                color="#a78bfa"
+                distance={200}
+            />
+
+            {/* Cyan fill from below */}
+            <pointLight
+                position={[0, -40, 0]}
+                intensity={0.3}
+                color="#22d3ee"
+                distance={150}
+            />
+
+            {/* ========================================
+                PROCEDURAL BACKGROUND ELEMENTS
+            ======================================== */}
+
+            {/* Distant galaxy in background */}
             <Galaxy />
+
+            {/* Nebula color glow */}
+            <NebulaGlow />
+
+            {/* Multi-layer star field with blinking */}
+            <Starfield />
+
+            {/* Floating dust particles */}
+            <CosmicDust />
+
+            {/* Distant planets */}
             <Planets />
+
+            {/* ========================================
+                3D MODEL ELEMENTS (GLTF)
+            ======================================== */}
+
+            {/* Asteroid field using asteroid_low_poly and space_rocks models */}
             <AsteroidField />
-            
-            {/* Cinematic flyby spaceship - triggers on "What I Do" section */}
+
+            {/* Main spaceship using spaceship model - continuous flyby */}
             <SpaceshipFlyby />
         </group>
     );
