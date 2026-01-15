@@ -26,12 +26,12 @@ export default function SpaceshipFlyby() {
     const clonedScene = useMemo(() => {
         const clone = scene.clone();
         const objectsToRemove: THREE.Object3D[] = [];
-        
+
         clone.traverse((child) => {
             if (child instanceof THREE.Mesh) {
                 const geometry = child.geometry;
                 const material = child.material as THREE.Material;
-                
+
                 // Remove planes/quads (background elements)
                 if (geometry) {
                     const posAttr = geometry.getAttribute('position');
@@ -41,7 +41,7 @@ export default function SpaceshipFlyby() {
                         return;
                     }
                 }
-                
+
                 // Remove objects with names suggesting background
                 const name = child.name.toLowerCase();
                 if (name.includes('plane') || name.includes('background') || name.includes('floor') || name.includes('ground')) {
@@ -162,7 +162,7 @@ function EngineGlow() {
 
     useFrame((state) => {
         const time = state.clock.getElapsedTime();
-        
+
         // Flickering engine intensity
         if (light1Ref.current) {
             light1Ref.current.intensity = 15 + Math.sin(time * 30) * 5 + Math.random() * 3;
@@ -210,16 +210,18 @@ function SpeedStreaks({ progress }: { progress: number }) {
     const streaksRef = useRef<THREE.Points>(null);
     const count = 200;
 
-    const positions = new Float32Array(count * 3);
-    const velocities = new Float32Array(count);
-
-    for (let i = 0; i < count; i++) {
-        const i3 = i * 3;
-        positions[i3] = (Math.random() - 0.5) * 100;
-        positions[i3 + 1] = (Math.random() - 0.5) * 60;
-        positions[i3 + 2] = Math.random() * 50 - 25;
-        velocities[i] = 0.5 + Math.random() * 1.5;
-    }
+    const [positions, velocities] = useMemo(() => {
+        const pos = new Float32Array(count * 3);
+        const vel = new Float32Array(count);
+        for (let i = 0; i < count; i++) {
+            const i3 = i * 3;
+            pos[i3] = (Math.random() - 0.5) * 100;
+            pos[i3 + 1] = (Math.random() - 0.5) * 60;
+            pos[i3 + 2] = Math.random() * 50 - 25;
+            vel[i] = 0.5 + Math.random() * 1.5;
+        }
+        return [pos, vel];
+    }, [count]);
 
     useFrame(() => {
         if (!streaksRef.current) return;
@@ -249,9 +251,7 @@ function SpeedStreaks({ progress }: { progress: number }) {
             <bufferGeometry>
                 <bufferAttribute
                     attach="attributes-position"
-                    count={count}
-                    array={positions}
-                    itemSize={3}
+                    args={[positions, 3]}
                 />
             </bufferGeometry>
             <pointsMaterial
