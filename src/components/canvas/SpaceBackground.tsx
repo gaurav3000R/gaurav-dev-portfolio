@@ -10,8 +10,8 @@ import { useScrollIntegration } from '@/lib/hooks/useScrollIntegration';
  * SpaceBackground Component
  * 
  * Cinematic 3D space background with:
- * - Deep space gradient (near-black to deep-blue)
- * - Subtle fog for depth falloff
+ * - Galaxy Skybox (GLTF model as background)
+ * - All 3D space elements
  * - 60 FPS target performance
  */
 export default function SpaceBackground() {
@@ -24,7 +24,7 @@ export default function SpaceBackground() {
             style={{
                 zIndex: 0,
                 pointerEvents: 'none',
-                background: 'linear-gradient(180deg, #020810 0%, #000205 50%, #000000 100%)',
+                background: 'transparent',
             }}
         >
             <Canvas
@@ -39,7 +39,7 @@ export default function SpaceBackground() {
                 performance={{ min: 0.5 }}
                 gl={{
                     antialias: true,
-                    alpha: true,
+                    alpha: false,
                     powerPreference: 'high-performance',
                 }}
                 style={{
@@ -48,8 +48,7 @@ export default function SpaceBackground() {
                     pointerEvents: 'none',
                 }}
             >
-                {/* Deep fog for infinite depth feel */}
-                <fog attach="fog" args={['#020810', 80, 800]} />
+                {/* No fog - let the skybox be visible */}
 
                 <Suspense fallback={null}>
                     <SpaceScene />

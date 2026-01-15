@@ -7,9 +7,9 @@ import { useSpaceStore } from '@/store/spaceStore';
 
 import Starfield from './objects/Starfield';
 import CosmicDust from './objects/CosmicDust';
-import Planets from './objects/Planets';
 import AsteroidField from './objects/AsteroidField';
 import Galaxy from './objects/Galaxy';
+import GalaxySkybox from './objects/GalaxySkybox';
 import NebulaGlow from './effects/NebulaGlow';
 import SpaceshipFlyby from './effects/SpaceshipFlyby';
 
@@ -17,9 +17,9 @@ import SpaceshipFlyby from './effects/SpaceshipFlyby';
  * SpaceScene - Main scene orchestrator
  * 
  * All 3D elements synchronized:
+ * - Galaxy Skybox (GLTF: realistic_galaxy_skybox_hdri_panorama) - Background
  * - Starfield (procedural)
  * - Cosmic Dust (procedural particles)
- * - Planets (procedural spheres)
  * - Galaxy (procedural spiral)
  * - Nebula Glow (procedural effect)
  * - Asteroid Field (GLTF: asteroid_low_poly + space_rocks)
@@ -95,6 +95,13 @@ export default function SpaceScene() {
             />
 
             {/* ========================================
+                SKYBOX / BACKGROUND (GLTF)
+            ======================================== */}
+
+            {/* Realistic Galaxy Skybox - wraps entire scene */}
+            <GalaxySkybox />
+
+            {/* ========================================
                 PROCEDURAL BACKGROUND ELEMENTS
             ======================================== */}
 
@@ -109,9 +116,6 @@ export default function SpaceScene() {
 
             {/* Floating dust particles */}
             <CosmicDust />
-
-            {/* Distant planets */}
-            <Planets />
 
             {/* ========================================
                 3D MODEL ELEMENTS (GLTF)

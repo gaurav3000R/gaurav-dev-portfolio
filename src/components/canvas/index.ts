@@ -7,6 +7,7 @@
  * - /3d-modals/spaceship/scene.gltf (SpaceshipFlyby)
  * - /3d-modals/asteroid_low_poly/scene.gltf (AsteroidField)
  * - /3d-modals/space_rocks/scene.gltf (AsteroidField)
+ * - /3d-modals/realistic_galaxy_skybox_hdri_panorama/scene.gltf (GalaxySkybox)
  */
 
 export { default as SpaceBackground } from './SpaceBackground';
@@ -20,6 +21,7 @@ export { default as Galaxy } from './objects/Galaxy';
 
 // Objects (GLTF Models)
 export { default as AsteroidField } from './objects/AsteroidField';
+export { default as GalaxySkybox } from './objects/GalaxySkybox';
 
 // Effects
 export { default as NebulaGlow } from './effects/NebulaGlow';
