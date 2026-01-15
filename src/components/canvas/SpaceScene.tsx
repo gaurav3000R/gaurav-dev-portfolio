@@ -61,12 +61,12 @@ export default function SpaceScene() {
             {/* Scene Lighting - synchronized for all models */}
 
             {/* Ambient fill light */}
-            <ambientLight intensity={0.15} color="#b8c5d6" />
+            <ambientLight intensity={0.1} color="#b8c5d6" />
 
             {/* Main directional light (sun-like) */}
             <directionalLight
                 position={[50, 30, 20]}
-                intensity={0.8}
+                intensity={0.5}
                 color="#ffffff"
                 castShadow={false}
             />
@@ -74,14 +74,14 @@ export default function SpaceScene() {
             {/* Blue rim light from behind */}
             <directionalLight
                 position={[-30, -10, -50]}
-                intensity={0.4}
+                intensity={0.3}
                 color="#60a5fa"
             />
 
             {/* Purple accent light */}
             <pointLight
                 position={[0, 50, -100]}
-                intensity={0.5}
+                intensity={0.3}
                 color="#a78bfa"
                 distance={200}
             />
@@ -89,7 +89,7 @@ export default function SpaceScene() {
             {/* Cyan fill from below */}
             <pointLight
                 position={[0, -40, 0]}
-                intensity={0.3}
+                intensity={0.2}
                 color="#22d3ee"
                 distance={150}
             />

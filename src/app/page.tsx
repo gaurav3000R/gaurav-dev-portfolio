@@ -231,123 +231,85 @@ export default function Home() {
         ============================================ */}
         <section
           id="hero"
-          className="flex min-h-screen flex-col items-center justify-center px-6 py-16"
+          className="relative flex min-h-screen flex-col items-center justify-center px-6 overflow-hidden"
           aria-label="Introduction"
         >
-          <div className="max-w-3xl text-center">
+          <div className="relative z-10 w-full max-w-4xl text-center hero-float">
 
-            {/* Status Badge */}
+            {/* Status Badge - Minimal */}
             <AnimatedText animation="fade-in-up" delay={0}>
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-cosmic-teal/30 bg-cosmic-teal/10 px-4 py-1.5 backdrop-blur-sm">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 backdrop-blur-md">
                 <span className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cosmic-teal opacity-75"></span>
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-cosmic-teal"></span>
                 </span>
-                <p className="text-sm text-cosmic-teal font-medium">Available for new projects</p>
+                <p className="text-[10px] text-secondary font-bold tracking-[0.2em] uppercase">Ready for Innovation</p>
               </div>
             </AnimatedText>
 
-            {/* Name - Primary H1 for SEO */}
+            {/* Name */}
             <AnimatedText animation="scale-in-glow" delay={0.2}>
-              <h1 className="font-display mb-3 text-4xl font-bold tracking-wide text-primary md:text-6xl lg:text-7xl gradient-text animate-gradient">
+              <h1 className="font-display mb-2 text-6xl font-black tracking-tighter text-white md:text-8xl lg:text-9xl name-glow">
                 GAURAV RATHVA
               </h1>
             </AnimatedText>
 
-            {/* Professional Title - Important for SEO */}
+            {/* Role / High-end Subtitle */}
             <AnimatedText animation="fade-in-up" delay={0.3}>
-              <p className="mb-6 text-lg text-cosmic-cyan md:text-xl lg:text-2xl font-medium">
-                <span itemProp="jobTitle">Software Engineer</span> • Mobile & AI Developer
-              </p>
-            </AnimatedText>
-
-            {/* Tech Stack Pills */}
-            <AnimatedText animation="fade-in-up" delay={0.4}>
-              <div className="mb-8 flex flex-wrap justify-center gap-2" role="list" aria-label="Technologies">
-                {["Flutter", "React Native", "Android", "React.js", "Next.js", "Python", "LangChain", "AI/ML"].map((tech) => (
-                  <span
-                    key={tech}
-                    role="listitem"
-                    className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs md:text-sm text-secondary backdrop-blur-sm hover:border-cosmic-blue/30 hover:text-primary transition-all"
-                  >
-                    {tech}
-                  </span>
-                ))}
+              <div className="mb-8 flex flex-col items-center gap-2">
+                <p className="text-xl text-cosmic-cyan md:text-2xl font-medium tracking-tight">
+                  Software Engineer & AI Architect
+                </p>
+                <div className="h-px w-24 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
               </div>
             </AnimatedText>
 
-            {/* Professional Summary - SEO Rich */}
-            <AnimatedText animation="blur-in" delay={0.5}>
-              <p className="mx-auto mb-8 max-w-2xl text-base md:text-lg text-secondary leading-relaxed">
-                I build <span className="text-cosmic-blue font-semibold">mobile apps</span> that users love and{' '}
-                <span className="text-cosmic-purple font-semibold">AI systems</span> that solve real problems.
-                With <strong>3+ years</strong> of experience, I specialize in <em>Flutter</em>, <em>React Native</em>,
-                and modern <em>AI technologies</em> like LangChain and RAG pipelines.
+            {/* Summary - Clean & Focused */}
+            <AnimatedText animation="blur-in" delay={0.4}>
+              <p className="mx-auto mb-12 max-w-xl text-lg text-secondary/80 leading-relaxed font-light">
+                Crafting exceptional <span className="text-white font-medium">mobile experiences</span> and
+                intelligent <span className="text-white font-medium">AI systems</span> with code that's as beautiful as it is functional.
               </p>
             </AnimatedText>
 
-            {/* Quick Stats Bar */}
-            <AnimatedText animation="fade-in-up" delay={0.55}>
-              <div className="mb-8 flex flex-wrap justify-center gap-6 md:gap-10">
-                {STATS.slice(0, 3).map((stat) => (
-                  <div key={stat.label} className="text-center">
-                    <p className="text-2xl md:text-3xl font-bold gradient-text">{stat.value}</p>
-                    <p className="text-xs text-muted uppercase tracking-wider">{stat.label}</p>
-                  </div>
-                ))}
-              </div>
-            </AnimatedText>
-
-            {/* Contact Quick Access */}
-            <AnimatedText animation="fade-in-up" delay={0.6}>
-              <address className="mb-8 flex flex-wrap justify-center gap-5 text-sm text-muted not-italic">
-                <a href="tel:+919265681173" className="flex items-center gap-1.5 hover:text-cosmic-cyan transition-colors" aria-label="Call Gaurav">
-                  <Phone className="h-4 w-4" aria-hidden="true" />
-                  +91 9265681173
-                </a>
-                <a href="mailto:gauravrathva8@gmail.com" className="flex items-center gap-1.5 hover:text-cosmic-cyan transition-colors" aria-label="Email Gaurav">
-                  <Mail className="h-4 w-4" aria-hidden="true" />
-                  gauravrathva8@gmail.com
-                </a>
-                <span className="flex items-center gap-1.5">
-                  <MapPin className="h-4 w-4" aria-hidden="true" />
-                  <span itemProp="address">Vadodara, India</span>
-                </span>
-              </address>
-            </AnimatedText>
-
-            {/* CTA Buttons */}
-            <AnimatedText animation="fade-in-up" delay={0.7}>
-              <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+            {/* Actions - Clean Buttons */}
+            <AnimatedText animation="fade-in-up" delay={0.5}>
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center">
                 <a
                   href="#contact"
-                  className="group rounded-full bg-gradient-to-r from-cosmic-blue to-cosmic-purple px-6 py-3 text-sm font-semibold text-white transition-all hover:shadow-lg hover:shadow-cosmic-purple/30 hover:scale-105"
+                  className="group relative overflow-hidden rounded-full bg-white px-10 py-4 text-sm font-black text-black transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
                 >
-                  <span className="flex items-center justify-center gap-2">
-                    <MessageSquare className="h-4 w-4" aria-hidden="true" />
-                    Start a Project
-                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
-                  </span>
+                  HIRE ME
                 </a>
                 <a
                   href="#projects"
-                  className="rounded-full border border-white/15 px-6 py-3 text-sm font-medium text-secondary backdrop-blur-sm transition-all hover:border-white/30 hover:text-primary flex items-center justify-center gap-2"
+                  className="group rounded-full border border-white/10 bg-white/5 backdrop-blur-md px-10 py-4 text-sm font-bold text-white transition-all hover:bg-white/10 hover:border-white/30"
                 >
-                  <Rocket className="h-4 w-4" aria-hidden="true" />
-                  View My Work
+                  VIEW WORK
                 </a>
               </div>
             </AnimatedText>
 
-            {/* Scroll Indicator */}
-            <FloatingElement speed="slow" className="mt-14">
-              <a href="#services" className="flex flex-col items-center gap-2 text-muted hover:text-secondary transition-colors">
-                <p className="text-xs uppercase tracking-widest">Explore</p>
-                <div className="h-8 w-px bg-gradient-to-b from-white/30 to-transparent" />
+            {/* Meta Info Bar */}
+            <AnimatedText animation="fade-in-up" delay={0.6} className="mt-16">
+              <div className="flex items-center justify-center gap-8 text-[10px] text-muted font-bold tracking-[0.2em] uppercase opacity-60">
+                <span className="flex items-center gap-2"><MapPin className="h-3 w-3" /> India / Global</span>
+                <span className="flex items-center gap-2"><Briefcase className="h-3 w-3" /> 3+ Years Experience</span>
+              </div>
+            </AnimatedText>
+          </div>
+
+          {/* Minimal Scroll Hint */}
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
+            <FloatingElement speed="slow">
+              <a href="#services" className="flex flex-col items-center gap-4 opacity-30 hover:opacity-100 transition-opacity">
+                <div className="h-16 w-px bg-gradient-to-b from-white to-transparent" />
               </a>
             </FloatingElement>
           </div>
         </section>
+
+        <div className="section-divider" />
 
         {/* ============================================
             SERVICES / WHAT I DO
@@ -361,7 +323,7 @@ export default function Home() {
 
             <AnimatedText animation="fade-in-up" className="mb-12 text-center">
               <p className="mb-2 text-xs uppercase tracking-widest text-cosmic-blue">Services</p>
-              <h2 id="services-heading" className="text-2xl font-semibold text-primary md:text-4xl mb-4">
+              <h2 id="services-heading" className="text-2xl font-semibold text-primary md:text-4xl mb-4 title-glow">
                 What I Can Build For You
               </h2>
               <p className="mx-auto max-w-2xl text-secondary">
@@ -373,9 +335,9 @@ export default function Home() {
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {SERVICES.map((service, i) => (
                 <AnimatedText key={service.title} animation="fade-in-up" delay={0.08 * i}>
-                  <article className="group rounded-xl border border-white/12 bg-black/40 backdrop-blur-2xl p-6 transition-all hover:border-cosmic-blue/30 card-hover h-full flex flex-col">
+                  <article className="group rounded-xl border border-white/12 bg-black/5 backdrop-blur-2xl p-6 transition-all hover:border-cosmic-blue/30 card-glow h-full flex flex-col">
                     <div className={`inline-flex p-3 rounded-lg bg-${service.color}/10 mb-4 w-fit`}>
-                      <service.icon className={`h-6 w-6 text-${service.color}`} aria-hidden="true" />
+                      <service.icon className={`h-6 w-6 text-${service.color} icon-glow`} aria-hidden="true" />
                     </div>
                     <h3 className="text-lg font-semibold text-primary mb-2">
                       {service.title}
@@ -397,6 +359,8 @@ export default function Home() {
           </div>
         </section>
 
+        <div className="section-divider" />
+
         {/* ============================================
             PROJECTS / PORTFOLIO
         ============================================ */}
@@ -409,7 +373,7 @@ export default function Home() {
 
             <AnimatedText animation="fade-in-up" className="mb-12 text-center">
               <p className="mb-2 text-xs uppercase tracking-widest text-cosmic-purple">Portfolio</p>
-              <h2 id="projects-heading" className="text-2xl font-semibold text-primary md:text-4xl mb-4">
+              <h2 id="projects-heading" className="text-2xl font-semibold text-primary md:text-4xl mb-4 title-glow">
                 Featured Projects
               </h2>
               <p className="mx-auto max-w-2xl text-secondary">
@@ -421,7 +385,7 @@ export default function Home() {
             <div className="grid gap-6 md:grid-cols-2">
               {PROJECTS.map((project, i) => (
                 <AnimatedText key={project.title} animation="fade-in-up" delay={0.1 * i}>
-                  <article className="group rounded-xl border border-white/12 bg-black/40 backdrop-blur-2xl p-6 transition-all hover:border-cosmic-purple/30 card-hover h-full">
+                  <article className="group rounded-xl border border-white/12 bg-black/5 backdrop-blur-2xl p-6 transition-all hover:border-cosmic-purple/30 card-glow h-full">
                     {/* Project Header */}
                     <div className="flex items-start justify-between mb-4">
                       <div>
@@ -496,6 +460,8 @@ export default function Home() {
           </div>
         </section>
 
+        <div className="section-divider" />
+
         {/* ============================================
             SKILLS
         ============================================ */}
@@ -508,7 +474,7 @@ export default function Home() {
 
             <AnimatedText animation="fade-in-up" className="mb-12 text-center">
               <p className="mb-2 text-xs uppercase tracking-widest text-cosmic-teal">Technical Skills</p>
-              <h2 id="skills-heading" className="text-2xl font-semibold text-primary md:text-4xl mb-4">
+              <h2 id="skills-heading" className="text-2xl font-semibold text-primary md:text-4xl mb-4 title-glow">
                 Technologies I Work With
               </h2>
               <p className="mx-auto max-w-2xl text-secondary">
@@ -519,7 +485,7 @@ export default function Home() {
             <div className="grid gap-6 md:grid-cols-2">
               {Object.values(SKILLS).map((category, i) => (
                 <AnimatedText key={category.title} animation="fade-in-up" delay={0.1 * i}>
-                  <div className="rounded-xl border border-white/12 bg-black/40 backdrop-blur-2xl p-6">
+                  <div className="rounded-xl border border-white/12 bg-black/5 backdrop-blur-2xl p-6 card-glow">
                     <div className="flex items-center gap-3 mb-5">
                       <category.icon className={`h-5 w-5 text-${category.color}`} />
                       <h3 className={`text-base font-semibold text-${category.color}`}>{category.title}</h3>
@@ -547,6 +513,8 @@ export default function Home() {
           </div>
         </section>
 
+        <div className="section-divider" />
+
         {/* ============================================
             EXPERIENCE
         ============================================ */}
@@ -559,7 +527,7 @@ export default function Home() {
 
             <AnimatedText animation="fade-in-up" className="mb-12 text-center">
               <p className="mb-2 text-xs uppercase tracking-widest text-cosmic-purple">Career</p>
-              <h2 id="experience-heading" className="text-2xl font-semibold text-primary md:text-4xl mb-4">
+              <h2 id="experience-heading" className="text-2xl font-semibold text-primary md:text-4xl mb-4 title-glow">
                 Professional Experience
               </h2>
               <p className="mx-auto max-w-2xl text-secondary">
@@ -570,7 +538,7 @@ export default function Home() {
             <div className="space-y-6">
               {EXPERIENCES.map((exp, i) => (
                 <AnimatedText key={exp.company} animation={i % 2 === 0 ? "fade-in-left" : "fade-in-right"} delay={0.1 * i}>
-                  <article className="rounded-xl border border-white/12 bg-black/40 backdrop-blur-2xl p-6 hover:border-cosmic-cyan/30 transition-all">
+                  <article className="rounded-xl border border-white/12 bg-black/5 backdrop-blur-2xl p-6 hover:border-cosmic-cyan/30 transition-all card-glow">
                     {/* Header */}
                     <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
                       <div>
@@ -623,6 +591,8 @@ export default function Home() {
           </div>
         </section>
 
+        <div className="section-divider" />
+
         {/* ============================================
             CURRENT FOCUS / LEARNING
         ============================================ */}
@@ -635,7 +605,7 @@ export default function Home() {
 
             <AnimatedText animation="fade-in-up" className="mb-10 text-center">
               <p className="mb-2 text-xs uppercase tracking-widest text-cosmic-pink">Growth</p>
-              <h2 id="learning-heading" className="text-2xl font-semibold text-primary md:text-3xl">
+              <h2 id="learning-heading" className="text-2xl font-semibold text-primary md:text-3xl title-glow">
                 Currently Exploring
               </h2>
             </AnimatedText>
@@ -648,7 +618,7 @@ export default function Home() {
                 { icon: Sparkles, title: "AI + UX", desc: "Intelligent interfaces", color: "cosmic-teal" }
               ].map((item, i) => (
                 <AnimatedText key={item.title} animation="scale-in-glow" delay={0.1 * i}>
-                  <div className="rounded-xl border border-white/12 bg-black/40 backdrop-blur-2xl p-5 text-center hover:border-cosmic-pink/30 transition-all card-hover">
+                  <div className="rounded-xl border border-white/12 bg-black/5 backdrop-blur-2xl p-5 text-center hover:border-cosmic-pink/30 transition-all card-glow">
                     <item.icon className={`h-6 w-6 text-${item.color} mx-auto mb-2`} />
                     <h3 className="text-sm font-semibold text-primary mb-1">{item.title}</h3>
                     <p className="text-xs text-secondary">{item.desc}</p>
@@ -658,6 +628,8 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <div className="section-divider" />
 
         {/* ============================================
             EDUCATION & CERTIFICATIONS
@@ -674,8 +646,8 @@ export default function Home() {
               <AnimatedText animation="fade-in-left">
                 <div>
                   <p className="mb-2 text-xs uppercase tracking-widest text-cosmic-purple">Education</p>
-                  <h2 id="education-heading" className="text-xl font-semibold text-primary mb-4">Academic Background</h2>
-                  <div className="rounded-xl border border-white/12 bg-black/40 backdrop-blur-2xl p-6">
+                  <h2 id="education-heading" className="text-xl font-semibold text-primary mb-4 title-glow">Academic Background</h2>
+                  <div className="rounded-xl border border-white/12 bg-black/5 backdrop-blur-2xl p-6">
                     <GraduationCap className="h-6 w-6 text-cosmic-purple mb-3" />
                     <h3 className="text-lg font-semibold text-primary mb-1">Bachelor of Computer Applications (BCA)</h3>
                     <p className="text-cosmic-cyan mb-1">Specialization in Information Technology</p>
@@ -692,9 +664,9 @@ export default function Home() {
               <AnimatedText animation="fade-in-right" delay={0.1}>
                 <div>
                   <p className="mb-2 text-xs uppercase tracking-widest text-cosmic-teal">Languages & More</p>
-                  <h2 className="text-xl font-semibold text-primary mb-4">Communication</h2>
+                  <h2 className="text-xl font-semibold text-primary mb-4 title-glow">Communication</h2>
                   <div className="space-y-4">
-                    <div className="rounded-xl border border-white/12 bg-black/40 backdrop-blur-2xl p-5">
+                    <div className="rounded-xl border border-white/12 bg-black/5 backdrop-blur-2xl p-5">
                       {[
                         { lang: "English", level: "Professional Working", proficiency: 90 },
                         { lang: "Hindi", level: "Native", proficiency: 100 },
@@ -706,7 +678,7 @@ export default function Home() {
                         </div>
                       ))}
                     </div>
-                    <div className="rounded-xl border border-white/12 bg-black/40 backdrop-blur-2xl p-4 flex items-center gap-3">
+                    <div className="rounded-xl border border-white/12 bg-black/5 backdrop-blur-2xl p-4 flex items-center gap-3">
                       <Award className="h-5 w-5 text-cosmic-orange" />
                       <div>
                         <p className="text-sm text-secondary font-medium">Photography Certification</p>
@@ -720,10 +692,12 @@ export default function Home() {
           </div>
         </section>
 
+        <div className="section-divider" />
+
         {/* ============================================
             TESTIMONIALS
         ============================================ */}
-        <section
+        {/* <section
           id="testimonials"
           className="relative px-6 py-20"
           aria-labelledby="testimonials-heading"
@@ -732,7 +706,7 @@ export default function Home() {
 
             <AnimatedText animation="fade-in-up" className="mb-10 text-center">
               <p className="mb-2 text-xs uppercase tracking-widest text-cosmic-orange">Feedback</p>
-              <h2 id="testimonials-heading" className="text-2xl font-semibold text-primary md:text-3xl">
+              <h2 id="testimonials-heading" className="text-2xl font-semibold text-primary md:text-3xl title-glow">
                 What Clients Say
               </h2>
             </AnimatedText>
@@ -740,7 +714,7 @@ export default function Home() {
             <div className="grid gap-6 md:grid-cols-2">
               {TESTIMONIALS.map((testimonial, i) => (
                 <AnimatedText key={i} animation="fade-in-up" delay={0.1 * i}>
-                  <blockquote className="rounded-xl border border-white/12 bg-black/40 backdrop-blur-2xl p-6 h-full flex flex-col">
+                  <blockquote className="rounded-xl border border-white/12 bg-black/5 backdrop-blur-2xl p-6 h-full flex flex-col card-glow">
                     <div className="flex gap-1 mb-4">
                       {[...Array(testimonial.rating)].map((_, j) => (
                         <Star key={j} className="h-4 w-4 text-cosmic-orange fill-cosmic-orange" />
@@ -756,7 +730,9 @@ export default function Home() {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
+
+        <div className="section-divider" />
 
         {/* ============================================
             PHILOSOPHY / WHY WORK WITH ME
@@ -770,13 +746,13 @@ export default function Home() {
 
             <AnimatedText animation="scale-in-glow">
               <p className="mb-2 text-xs uppercase tracking-widest text-cosmic-purple">Philosophy</p>
-              <h2 id="philosophy-heading" className="text-2xl font-semibold text-primary mb-6 md:text-3xl">
+              <h2 id="philosophy-heading" className="text-2xl font-semibold text-primary mb-6 md:text-3xl title-glow">
                 Why Work With Me?
               </h2>
             </AnimatedText>
 
             <AnimatedText animation="blur-in" delay={0.2}>
-              <blockquote className="rounded-xl border border-white/12 bg-black/40 backdrop-blur-2xl p-8 mb-8">
+              <blockquote className="rounded-xl border border-white/12 bg-black/5 backdrop-blur-2xl p-8 mb-8">
                 <p className="text-lg md:text-xl text-secondary italic leading-relaxed">
                   "I build software that is{' '}
                   <span className="text-cosmic-blue font-semibold">powerful inside</span>,{' '}
@@ -793,7 +769,7 @@ export default function Home() {
                   { icon: Zap, title: "Fast Delivery", desc: "Efficient workflows, clear communication" },
                   { icon: Palette, title: "User-Centric", desc: "Beautiful UX that users actually enjoy" }
                 ].map((item) => (
-                  <div key={item.title} className="p-4 rounded-xl border border-white/12 bg-black/40 backdrop-blur-2xl">
+                  <div key={item.title} className="p-4 rounded-xl border border-white/12 bg-black/5 backdrop-blur-2xl">
                     <item.icon className="h-5 w-5 text-cosmic-cyan mx-auto mb-2" />
                     <h3 className="text-sm font-semibold text-primary mb-1">{item.title}</h3>
                     <p className="text-xs text-secondary">{item.desc}</p>
@@ -810,6 +786,8 @@ export default function Home() {
           </div>
         </section>
 
+        <div className="section-divider" />
+
         {/* ============================================
             CONTACT / CTA
         ============================================ */}
@@ -822,7 +800,7 @@ export default function Home() {
 
             <AnimatedText animation="fade-in-up">
               <p className="mb-2 text-xs uppercase tracking-widest text-cosmic-blue">Get in Touch</p>
-              <h2 id="contact-heading" className="text-2xl font-semibold text-primary mb-3 md:text-4xl">
+              <h2 id="contact-heading" className="text-2xl font-semibold text-primary mb-3 md:text-4xl title-glow">
                 Let's Build Something Amazing
               </h2>
               <p className="text-secondary mb-8 max-w-xl mx-auto">
@@ -836,7 +814,7 @@ export default function Home() {
               <div className="grid gap-4 sm:grid-cols-3 mb-10">
                 <a
                   href="mailto:gauravrathva8@gmail.com"
-                  className="group rounded-xl border border-white/12 bg-black/40 backdrop-blur-2xl p-5 hover:border-cosmic-blue/30 transition-all card-hover"
+                  className="group rounded-xl border border-white/12 bg-black/5 backdrop-blur-2xl p-5 hover:border-cosmic-blue/30 transition-all card-hover"
                   aria-label="Send email to Gaurav"
                 >
                   <Mail className="h-6 w-6 text-cosmic-blue mx-auto mb-3" />
@@ -845,7 +823,7 @@ export default function Home() {
                 </a>
                 <a
                   href="tel:+919265681173"
-                  className="group rounded-xl border border-white/12 bg-black/40 backdrop-blur-2xl p-5 hover:border-cosmic-purple/30 transition-all card-hover"
+                  className="group rounded-xl border border-white/12 bg-black/5 backdrop-blur-2xl p-5 hover:border-cosmic-purple/30 transition-all card-hover"
                   aria-label="Call Gaurav"
                 >
                   <Phone className="h-6 w-6 text-cosmic-purple mx-auto mb-3" />
@@ -856,7 +834,7 @@ export default function Home() {
                   href="https://www.linkedin.com/in/gauravrathva-4aa815224"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group rounded-xl border border-white/12 bg-black/40 backdrop-blur-2xl p-5 hover:border-cosmic-pink/30 transition-all card-hover"
+                  className="group rounded-xl border border-white/12 bg-black/5 backdrop-blur-2xl p-5 hover:border-cosmic-pink/30 transition-all card-glow"
                   aria-label="Connect on LinkedIn"
                 >
                   <Linkedin className="h-6 w-6 text-cosmic-pink mx-auto mb-3" />
