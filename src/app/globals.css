@@ -11,14 +11,14 @@
   --bg-space: #0a0a1a;
   --bg-nebula: #0d1025;
 
-  /* Text colors - Optimized for dark backgrounds */
-  --text-primary: #e8eaed;
-  /* Bright white - main text */
-  --text-secondary: #9aa0a6;
-  /* Soft gray - secondary text */
-  --text-muted: #5f6368;
-  /* Dim gray - muted text */
-  --text-accent: #8ab4f8;
+  /* Text colors - HIGH CONTRAST for readability */
+  --text-primary: #ffffff;
+  /* Pure white - maximum contrast */
+  --text-secondary: #cbd5e1;
+  /* Light gray - very readable on dark */
+  --text-muted: #94a3b8;
+  /* Medium gray - still readable */
+  --text-accent: #93c5fd;
   /* Soft blue - links, accents */
 
   /* Cosmic accent colors */
@@ -355,6 +355,48 @@ a:hover {
 }
 
 /* ======================================
+   GLASSMORPHISM EFFECTS - Blur + Slight Dark
+   ====================================== */
+
+/* Glass card with blur effect */
+.card-glass {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Stronger glass effect for cards */
+.card-glass-strong {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* Section with blur overlay */
+.section-glass {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Section with stronger blur */
+.section-blur {
+  position: relative;
+}
+
+.section-blur::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: -1;
+}
+
+/* ======================================
    CARD HOVER EFFECTS
    ====================================== */
 
@@ -364,7 +406,8 @@ a:hover {
 
 .card-hover:hover {
   transform: translateY(-3px);
-  border-color: var(--border-accent);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.35);
 }
 
 /* ======================================
