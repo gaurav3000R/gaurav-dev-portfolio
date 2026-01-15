@@ -7,3 +7,4 @@
 export { useMouseInteraction } from './useMouseInteraction';
 export { useScrollIntegration } from './useScrollIntegration';
 export { useSpaceAudio } from './useSpaceAudio';
+export { useScrollAnimation } from './useScrollAnimation';

@@ -1,7 +1,13 @@
+'use client';
+
 import { SpaceBackground } from '@/components/canvas';
 import {
+  AnimatedText,
+  FloatingElement,
+} from '@/components/ui/AnimatedText';
+import {
   Smartphone, Globe, Brain, Zap, Building2, Target,
-  Code2, Cpu, Database, GitBranch, Layers, Rocket,
+  Code2, Cpu, GitBranch, Layers, Rocket,
   Mail, Phone, Linkedin, MapPin, Briefcase, GraduationCap,
   Award, Languages, CheckCircle2, ArrowRight
 } from 'lucide-react';
@@ -14,651 +20,463 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="relative z-10">
-        {/* Hero Section */}
-        <section className="flex min-h-screen flex-col items-center justify-center px-6 py-20">
-          <div className="max-w-5xl text-center">
-            {/* Greeting */}
-            <div className="mb-6 inline-block rounded-full border border-white/20 bg-white/5 px-6 py-2 backdrop-blur-sm">
-              <p className="text-sm font-medium text-gray-300">👋 Hi, I'm</p>
-            </div>
 
-            {/* Name */}
-            <h1 className="mb-6 text-6xl font-bold tracking-tight text-white md:text-8xl lg:text-9xl">
-              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Gaurav Rathva
-              </span>
-            </h1>
+        {/* ============================================
+            HERO SECTION
+        ============================================ */}
+        <section className="flex min-h-screen flex-col items-center justify-center px-6 py-16">
+          <div className="max-w-3xl text-center">
 
-            {/* Tagline */}
-            <p className="mb-8 text-xl text-gray-300 md:text-2xl lg:text-3xl">
-              Software Engineer × Mobile & AI Systems Builder
-            </p>
+            {/* Greeting Badge */}
+            <AnimatedText animation="fade-in-up" delay={0}>
+              <div className="mb-4 inline-block rounded-full border border-white/10 bg-white/5 px-4 py-1.5 backdrop-blur-sm">
+                <p className="text-sm text-secondary">👋 Hello, I'm</p>
+              </div>
+            </AnimatedText>
 
-            {/* Tech Stack Pills */}
-            <div className="mb-12 flex flex-wrap justify-center gap-2">
-              {["Flutter", "React Native", "Android", "React.js", "Next.js", "Python", "LangChain", "Agentic AI"].map((tech) => (
-                <span
-                  key={tech}
-                  className="rounded-full border border-white/20 bg-white/5 px-4 py-1.5 text-sm font-medium text-gray-300 backdrop-blur-sm"
-                >
-                  {tech}
+            {/* Name - Display Font */}
+            <AnimatedText animation="scale-in-glow" delay={0.2}>
+              <h1 className="font-display mb-3 text-4xl font-bold tracking-wide text-primary md:text-6xl lg:text-7xl gradient-text animate-gradient">
+                GAURAV RATHVA
+              </h1>
+            </AnimatedText>
+
+            {/* Role */}
+            <AnimatedText animation="fade-in-up" delay={0.3}>
+              <p className="mb-6 text-lg text-cosmic-cyan md:text-xl font-medium">
+                Software Engineer • Mobile & AI Builder
+              </p>
+            </AnimatedText>
+
+            {/* Tech Pills */}
+            <AnimatedText animation="fade-in-up" delay={0.4}>
+              <div className="mb-8 flex flex-wrap justify-center gap-2">
+                {["Flutter", "React Native", "Android", "React.js", "Next.js", "Python", "LangChain"].map((tech) => (
+                  <span
+                    key={tech}
+                    className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-secondary backdrop-blur-sm hover:border-cosmic-blue/30 hover:text-primary transition-all"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </AnimatedText>
+
+            {/* Bio - Simple & Clear */}
+            <AnimatedText animation="blur-in" delay={0.5}>
+              <p className="mx-auto mb-8 max-w-2xl text-base text-secondary leading-relaxed">
+                I build <span className="text-cosmic-blue font-medium">mobile apps</span> and{' '}
+                <span className="text-cosmic-purple font-medium">AI systems</span> that work beautifully.
+                3+ years crafting cross-platform experiences with Flutter, React Native, and modern AI tools.
+              </p>
+            </AnimatedText>
+
+            {/* Contact Row */}
+            <AnimatedText animation="fade-in-up" delay={0.6}>
+              <div className="mb-8 flex flex-wrap justify-center gap-5 text-sm text-muted">
+                <a href="tel:9265681173" className="flex items-center gap-1.5 hover:text-cosmic-cyan transition-colors">
+                  <Phone className="h-4 w-4" />
+                  +91 9265681173
+                </a>
+                <a href="mailto:gauravrathva8@gmail.com" className="flex items-center gap-1.5 hover:text-cosmic-cyan transition-colors">
+                  <Mail className="h-4 w-4" />
+                  gauravrathva8@gmail.com
+                </a>
+                <span className="flex items-center gap-1.5">
+                  <MapPin className="h-4 w-4" />
+                  Vadodara, India
                 </span>
-              ))}
-            </div>
-
-            {/* Bio */}
-            <p className="mx-auto mb-8 max-w-4xl text-lg leading-relaxed text-gray-400">
-              Experienced Software Engineer with <span className="text-white font-semibold">3+ years</span> of expertise in
-              <span className="text-blue-400"> Flutter</span>,
-              <span className="text-purple-400"> React Native</span>, and
-              <span className="text-pink-400"> Android development</span>.
-              Currently transitioning deeper into <span className="text-white font-semibold">AI-driven systems</span>,
-              <span className="text-white font-semibold"> local LLM engineering</span>, and
-              <span className="text-white font-semibold"> agentic AI workflows</span>.
-            </p>
-
-            <p className="mx-auto mb-12 max-w-4xl text-lg leading-relaxed text-gray-400">
-              My core strength sits at the intersection of <span className="text-blue-400">mobile craftsmanship</span>,
-              <span className="text-purple-400"> web development</span>, and <span className="text-pink-400">applied AI</span>.
-              I specialize in building cross-platform applications with beautiful UIs, robust architectures, and seamless user experiences.
-            </p>
-
-            {/* Quick Contact */}
-            <div className="mb-12 flex flex-wrap justify-center gap-4 text-sm text-gray-400">
-              <a href="tel:9265681173" className="flex items-center gap-2 hover:text-white transition-colors">
-                <Phone className="h-4 w-4" />
-                +91 9265681173
-              </a>
-              <a href="mailto:gauravrathva8@gmail.com" className="flex items-center gap-2 hover:text-white transition-colors">
-                <Mail className="h-4 w-4" />
-                gauravrathva8@gmail.com
-              </a>
-              <a href="https://www.linkedin.com/in/gauravrathva-4aa815224" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-white transition-colors">
-                <Linkedin className="h-4 w-4" />
-                LinkedIn
-              </a>
-              <span className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                Vadodara, Gujarat, India
-              </span>
-            </div>
+              </div>
+            </AnimatedText>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <a
-                href="#contact"
-                className="group relative overflow-hidden rounded-full bg-white/10 px-8 py-4 text-white backdrop-blur-sm transition-all hover:bg-white/20"
-              >
-                <span className="relative z-10 flex items-center gap-2">
-                  <Mail className="h-5 w-5" />
-                  Let's Build Together
-                </span>
-                <div className="absolute inset-0 -z-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 transition-opacity group-hover:opacity-20" />
-              </a>
+            <AnimatedText animation="fade-in-up" delay={0.7}>
+              <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+                <a
+                  href="#contact"
+                  className="group rounded-full bg-gradient-to-r from-cosmic-blue to-cosmic-purple px-6 py-3 text-sm font-medium text-white transition-all hover:shadow-lg hover:shadow-cosmic-purple/30"
+                >
+                  <span className="flex items-center justify-center gap-2">
+                    <Mail className="h-4 w-4" />
+                    Let's Connect
+                  </span>
+                </a>
+                <a
+                  href="#experience"
+                  className="rounded-full border border-white/15 px-6 py-3 text-sm font-medium text-secondary backdrop-blur-sm transition-all hover:border-white/30 hover:text-primary flex items-center justify-center gap-2"
+                >
+                  <Briefcase className="h-4 w-4" />
+                  My Experience
+                </a>
+              </div>
+            </AnimatedText>
 
-              <a
-                href="#experience"
-                className="rounded-full border border-white/20 px-8 py-4 text-white backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/5 flex items-center gap-2"
-              >
-                <Briefcase className="h-5 w-5" />
-                View Experience
-              </a>
-            </div>
-
-            {/* Scroll Indicator */}
-            <div className="mt-20 flex flex-col items-center gap-2 text-gray-500">
-              <p className="text-sm uppercase tracking-wider">Scroll to Explore</p>
-              <div className="h-12 w-px animate-pulse bg-gradient-to-b from-gray-500 to-transparent" />
-            </div>
+            {/* Scroll Hint */}
+            <FloatingElement speed="slow" className="mt-14">
+              <div className="flex flex-col items-center gap-2 text-muted">
+                <p className="text-xs uppercase tracking-widest">Explore</p>
+                <div className="h-6 w-px bg-gradient-to-b from-white/30 to-transparent" />
+              </div>
+            </FloatingElement>
           </div>
         </section>
 
-        {/* What I Do Section */}
-        <section id="what-i-do" className="relative min-h-screen bg-gradient-to-b from-transparent via-black/30 to-transparent px-6 py-32">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-16 text-center">
-              <div className="mb-4 inline-block rounded-full border border-blue-400/30 bg-blue-400/10 px-4 py-1 text-sm font-semibold text-blue-300">
-                Expertise
-              </div>
-              <h2 className="mb-4 text-5xl font-bold text-white md:text-6xl">
-                🚀 What I Do
-              </h2>
-              <p className="text-xl text-gray-400">
-                Building the future, one system at a time
-              </p>
-            </div>
+        {/* ============================================
+            WHAT I DO
+        ============================================ */}
+        <section id="what-i-do" className="relative px-6 py-20">
+          <div className="mx-auto max-w-5xl">
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <AnimatedText animation="fade-in-up" className="mb-10 text-center">
+              <p className="mb-2 text-xs uppercase tracking-widest text-cosmic-blue">Expertise</p>
+              <h2 className="text-2xl font-semibold text-primary md:text-3xl">
+                What I Build
+              </h2>
+            </AnimatedText>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {[
                 {
                   icon: Smartphone,
-                  title: "Mobile Excellence",
-                  description: "Expert in Flutter & React Native. Built high-performance cross-platform apps with beautiful, smooth UIs.",
-                  gradient: "from-blue-500 to-cyan-500"
+                  title: "Mobile Apps",
+                  desc: "Cross-platform apps with Flutter & React Native",
+                  color: "cosmic-blue"
                 },
                 {
                   icon: Code2,
-                  title: "Android Development",
-                  description: "Proficient in Java and native Android frameworks. Developed robust Android applications from scratch.",
-                  gradient: "from-green-500 to-emerald-500"
+                  title: "Android",
+                  desc: "Native Android development with Java",
+                  color: "cosmic-teal"
                 },
                 {
                   icon: Globe,
-                  title: "Modern Web",
-                  description: "Build scalable web apps with React, Next.js, and Node.js. Focus on performance and user experience.",
-                  gradient: "from-purple-500 to-pink-500"
+                  title: "Web Apps",
+                  desc: "Modern web with React, Next.js & Node",
+                  color: "cosmic-purple"
                 },
                 {
                   icon: Brain,
-                  title: "AI-Powered Systems",
-                  description: "Design intelligent systems using Python, LangChain, RAG, and local LLMs. Building the AI-first future.",
-                  gradient: "from-orange-500 to-red-500"
+                  title: "AI Systems",
+                  desc: "LangChain, RAG, and local LLM solutions",
+                  color: "cosmic-orange"
                 },
                 {
                   icon: Zap,
-                  title: "Agentic AI Workflows",
-                  description: "Experiment with on-device AI, CLI tools, and offline-first intelligence. Making AI accessible.",
-                  gradient: "from-yellow-500 to-orange-500"
+                  title: "Agentic AI",
+                  desc: "Intelligent automation workflows",
+                  color: "cosmic-pink"
                 },
                 {
                   icon: Layers,
-                  title: "Clean Architecture",
-                  description: "Strong focus on clean code, system design, and real-world usability. Products that scale and evolve.",
-                  gradient: "from-indigo-500 to-purple-500"
+                  title: "Architecture",
+                  desc: "Clean, scalable system design",
+                  color: "cosmic-cyan"
                 }
               ].map((item, i) => (
-                <div
-                  key={i}
-                  className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm transition-all hover:border-white/20 hover:bg-white/10"
-                >
-                  <div className={`mb-4 inline-block rounded-xl bg-gradient-to-r ${item.gradient} p-3`}>
-                    <item.icon className="h-6 w-6 text-white" />
+                <AnimatedText key={i} animation="fade-in-up" delay={0.08 * i}>
+                  <div className="group rounded-xl border border-white/8 bg-white/3 p-5 backdrop-blur-sm transition-all hover:border-white/15 hover:bg-white/5 card-hover h-full">
+                    <item.icon className={`h-5 w-5 text-${item.color} mb-3`} />
+                    <h3 className="text-base font-semibold text-primary mb-1.5">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-secondary leading-relaxed">
+                      {item.desc}
+                    </p>
                   </div>
-                  <h3 className="mb-3 text-xl font-semibold text-white">
-                    {item.title}
-                  </h3>
-                  <p className="text-gray-400 leading-relaxed">
-                    {item.description}
-                  </p>
-                  <div className="absolute inset-0 -z-10 bg-gradient-to-br from-blue-500/10 to-purple-500/10 opacity-0 transition-opacity group-hover:opacity-100" />
-                </div>
+                </AnimatedText>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Experience Section */}
-        <section id="experience" className="relative min-h-screen px-6 py-32">
-          <div className="mx-auto max-w-5xl">
-            <div className="mb-16 text-center">
-              <div className="mb-4 inline-block rounded-full border border-purple-400/30 bg-purple-400/10 px-4 py-1 text-sm font-semibold text-purple-300">
-                <Briefcase className="inline h-4 w-4 mr-2" />
-                Career Journey
-              </div>
-              <h2 className="mb-4 text-5xl font-bold text-white md:text-6xl">
-                💼 Experience
+        {/* ============================================
+            EXPERIENCE
+        ============================================ */}
+        <section id="experience" className="relative px-6 py-20 bg-gradient-to-b from-transparent via-white/2 to-transparent">
+          <div className="mx-auto max-w-3xl">
+
+            <AnimatedText animation="fade-in-up" className="mb-10 text-center">
+              <p className="mb-2 text-xs uppercase tracking-widest text-cosmic-purple">Career</p>
+              <h2 className="text-2xl font-semibold text-primary md:text-3xl">
+                Work Experience
               </h2>
-              <p className="text-xl text-gray-400">
-                3+ years of building impactful products
-              </p>
-            </div>
+            </AnimatedText>
 
-            <div className="space-y-8">
-              {/* Digiflux IT Solutions */}
-              <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm transition-all hover:border-white/20 hover:bg-white/10">
-                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
-                  <div>
-                    <div className="mb-2 inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-500 px-3 py-1 text-xs font-semibold text-white">
-                      Current
+            <div className="space-y-5">
+
+              {/* Current Job */}
+              <AnimatedText animation="fade-in-left" delay={0.1}>
+                <div className="rounded-xl border border-white/8 bg-white/3 p-5 backdrop-blur-sm hover:border-white/15 transition-all">
+                  <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+                    <div>
+                      <span className="inline-block rounded-full bg-cosmic-blue/20 px-2 py-0.5 text-xs text-cosmic-blue font-medium mb-2">
+                        Current
+                      </span>
+                      <h3 className="text-lg font-semibold text-primary">Software Engineer</h3>
+                      <p className="text-sm text-cosmic-cyan flex items-center gap-1.5 mt-0.5">
+                        <Building2 className="h-3.5 w-3.5" />
+                        Digiflux IT Solutions
+                      </p>
                     </div>
-                    <h3 className="text-2xl font-bold text-white mb-2">Software Engineer</h3>
-                    <p className="text-lg text-blue-400 flex items-center gap-2">
-                      <Building2 className="h-5 w-5" />
-                      Digiflux IT Solutions
-                    </p>
+                    <div className="text-right text-sm text-muted">
+                      <p>Jul 2022 – Present</p>
+                      <p className="text-xs">Vadodara</p>
+                    </div>
                   </div>
-                  <div className="text-gray-400">
-                    <p className="font-medium">July 2022 - Present</p>
-                    <p className="text-sm">3 years 7 months</p>
-                    <p className="text-sm flex items-center gap-1 mt-1">
-                      <MapPin className="h-3 w-3" />
-                      Vadodara, Gujarat, India
-                    </p>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <p className="text-gray-300 leading-relaxed">
-                    Leading development of cross-platform mobile and web applications using Flutter, React Native, and modern web technologies.
+                  <p className="text-sm text-secondary mb-3">
+                    Building cross-platform mobile and web apps using Flutter, React Native, and modern AI tools.
                   </p>
-                  <div className="flex flex-wrap gap-2">
-                    {["Flutter", "React Native", "React.js", "Next.js", "TypeScript", "Python", "LangChain", "Agile"].map((skill) => (
-                      <span key={skill} className="rounded-full border border-blue-400/30 bg-blue-400/10 px-3 py-1 text-xs font-medium text-blue-300">
-                        {skill}
+                  <div className="flex flex-wrap gap-1.5">
+                    {["Flutter", "React Native", "Next.js", "Python", "LangChain"].map((s) => (
+                      <span key={s} className="rounded-full border border-cosmic-blue/20 bg-cosmic-blue/10 px-2 py-0.5 text-xs text-cosmic-blue">
+                        {s}
                       </span>
                     ))}
                   </div>
                 </div>
-              </div>
+              </AnimatedText>
 
-              {/* MDU SANTISOLUTION */}
-              <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm transition-all hover:border-white/20 hover:bg-white/10">
-                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
-                  <div>
-                    <h3 className="text-2xl font-bold text-white mb-2">Android Developer</h3>
-                    <p className="text-lg text-purple-400 flex items-center gap-2">
-                      <Building2 className="h-5 w-5" />
-                      MDU SANTISOLUTION PVT LTD
-                    </p>
+              {/* Previous Job */}
+              <AnimatedText animation="fade-in-right" delay={0.2}>
+                <div className="rounded-xl border border-white/8 bg-white/3 p-5 backdrop-blur-sm hover:border-white/15 transition-all">
+                  <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+                    <div>
+                      <h3 className="text-lg font-semibold text-primary">Android Developer</h3>
+                      <p className="text-sm text-cosmic-purple flex items-center gap-1.5 mt-0.5">
+                        <Building2 className="h-3.5 w-3.5" />
+                        MDU Santisolution Pvt Ltd
+                      </p>
+                    </div>
+                    <div className="text-right text-sm text-muted">
+                      <p>Jan – Mar 2022</p>
+                      <p className="text-xs">3 months</p>
+                    </div>
                   </div>
-                  <div className="text-gray-400">
-                    <p className="font-medium">January 2022 - March 2022</p>
-                    <p className="text-sm">3 months</p>
-                    <p className="text-sm flex items-center gap-1 mt-1">
-                      <MapPin className="h-3 w-3" />
-                      India
-                    </p>
-                  </div>
+                  <p className="text-sm text-secondary flex items-start gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-cosmic-teal mt-0.5 flex-shrink-0" />
+                    Built a complete eCommerce Android application
+                  </p>
                 </div>
-                <div className="space-y-3">
-                  <div className="flex items-start gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <p className="text-gray-300 leading-relaxed">
-                      Successfully completed development of a full-featured eCommerce application
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {["Android", "Java", "E-commerce", "Mobile Development"].map((skill) => (
-                      <span key={skill} className="rounded-full border border-purple-400/30 bg-purple-400/10 px-3 py-1 text-xs font-medium text-purple-300">
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              </AnimatedText>
             </div>
           </div>
         </section>
 
-        {/* Current Focus Section */}
-        <section className="relative min-h-screen bg-gradient-to-b from-transparent via-black/30 to-transparent px-6 py-32">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-16 text-center">
-              <div className="mb-4 inline-block rounded-full border border-pink-400/30 bg-pink-400/10 px-4 py-1 text-sm font-semibold text-pink-300">
-                <Target className="inline h-4 w-4 mr-2" />
-                Active Learning
-              </div>
-              <h2 className="mb-4 text-5xl font-bold text-white md:text-6xl">
-                🧠 Current Focus
-              </h2>
-              <p className="text-xl text-gray-400">
-                Where I'm pushing boundaries
-              </p>
-            </div>
+        {/* ============================================
+            CURRENT FOCUS
+        ============================================ */}
+        <section className="relative px-6 py-20">
+          <div className="mx-auto max-w-4xl">
 
-            <div className="grid gap-8 md:grid-cols-2">
+            <AnimatedText animation="fade-in-up" className="mb-10 text-center">
+              <p className="mb-2 text-xs uppercase tracking-widest text-cosmic-pink">Learning</p>
+              <h2 className="text-2xl font-semibold text-primary md:text-3xl">
+                Current Focus
+              </h2>
+            </AnimatedText>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {[
-                {
-                  icon: Cpu,
-                  title: "Local LLM Inference",
-                  subtitle: "CLI + Mobile Integration",
-                  gradient: "from-blue-500 to-cyan-500"
-                },
-                {
-                  icon: Brain,
-                  title: "Agentic AI Systems",
-                  subtitle: "Intelligent Workflows & Automation",
-                  gradient: "from-purple-500 to-pink-500"
-                },
-                {
-                  icon: Rocket,
-                  title: "Next.js Performance",
-                  subtitle: "Advanced Rendering & Optimization",
-                  gradient: "from-orange-500 to-red-500"
-                },
-                {
-                  icon: Zap,
-                  title: "AI + UX",
-                  subtitle: "Making Intelligence Feel Natural",
-                  gradient: "from-green-500 to-teal-500"
-                }
+                { icon: Cpu, title: "Local LLMs", color: "cosmic-blue" },
+                { icon: Brain, title: "Agentic AI", color: "cosmic-purple" },
+                { icon: Rocket, title: "Next.js", color: "cosmic-orange" },
+                { icon: Zap, title: "AI + UX", color: "cosmic-teal" }
               ].map((item, i) => (
-                <div
-                  key={i}
-                  className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-10 backdrop-blur-sm transition-all hover:border-white/20 hover:bg-white/10"
-                >
-                  <div className={`mb-6 inline-block rounded-xl bg-gradient-to-r ${item.gradient} p-3`}>
-                    <item.icon className="h-8 w-8 text-white" />
+                <AnimatedText key={i} animation="scale-in-glow" delay={0.1 * i}>
+                  <div className="rounded-xl border border-white/8 bg-white/3 p-5 text-center backdrop-blur-sm hover:border-white/15 transition-all card-hover">
+                    <item.icon className={`h-6 w-6 text-${item.color} mx-auto mb-2`} />
+                    <h3 className="text-sm font-semibold text-primary">{item.title}</h3>
                   </div>
-                  <div className={`mb-4 inline-block rounded-full bg-gradient-to-r ${item.gradient} px-4 py-1 text-sm font-semibold text-white`}>
-                    Active
-                  </div>
-                  <h3 className="mb-2 text-3xl font-bold text-white">
-                    {item.title}
-                  </h3>
-                  <p className="text-lg text-gray-400">
-                    {item.subtitle}
-                  </p>
-                </div>
+                </AnimatedText>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Tech Stack Section */}
-        <section className="relative min-h-screen px-6 py-32">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-16 text-center">
-              <div className="mb-4 inline-block rounded-full border border-green-400/30 bg-green-400/10 px-4 py-1 text-sm font-semibold text-green-300">
-                <Code2 className="inline h-4 w-4 mr-2" />
-                Technologies
-              </div>
-              <h2 className="mb-4 text-5xl font-bold text-white md:text-6xl">
-                🧰 Tech Stack
+        {/* ============================================
+            TECH STACK
+        ============================================ */}
+        <section className="relative px-6 py-20 bg-gradient-to-b from-transparent via-white/2 to-transparent">
+          <div className="mx-auto max-w-4xl">
+
+            <AnimatedText animation="fade-in-up" className="mb-10 text-center">
+              <p className="mb-2 text-xs uppercase tracking-widest text-cosmic-teal">Technologies</p>
+              <h2 className="text-2xl font-semibold text-primary md:text-3xl">
+                Tech Stack
               </h2>
-              <p className="text-xl text-gray-400">
-                Tools I use to build the future
-              </p>
-            </div>
+            </AnimatedText>
 
-            <div className="space-y-8">
-              {/* Mobile Development */}
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
-                <div className="mb-6 flex items-center gap-3">
-                  <div className="rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 p-3">
-                    <Smartphone className="h-6 w-6 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-blue-400">Mobile Development</h3>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  {["Flutter", "React Native", "Android (Java)", "TypeScript", "Dart"].map((tech) => (
-                    <span
-                      key={tech}
-                      className="rounded-full border border-blue-400/30 bg-blue-400/10 px-5 py-2 text-sm font-medium text-blue-300 transition-all hover:border-blue-400/50 hover:bg-blue-400/20"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Web Development */}
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
-                <div className="mb-6 flex items-center gap-3">
-                  <div className="rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 p-3">
-                    <Globe className="h-6 w-6 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-purple-400">Web Development</h3>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  {["React.js", "Next.js", "Node.js", "TypeScript", "JavaScript", "HTML/CSS"].map((tech) => (
-                    <span
-                      key={tech}
-                      className="rounded-full border border-purple-400/30 bg-purple-400/10 px-5 py-2 text-sm font-medium text-purple-300 transition-all hover:border-purple-400/50 hover:bg-purple-400/20"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* AI & Backend */}
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
-                <div className="mb-6 flex items-center gap-3">
-                  <div className="rounded-xl bg-gradient-to-r from-orange-500 to-red-500 p-3">
-                    <Brain className="h-6 w-6 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-orange-400">AI & Backend</h3>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  {["Python", "LangChain", "RAG", "Local LLMs", "Agentic AI", "MongoDB", "REST APIs"].map((tech) => (
-                    <span
-                      key={tech}
-                      className="rounded-full border border-orange-400/30 bg-orange-400/10 px-5 py-2 text-sm font-medium text-orange-300 transition-all hover:border-orange-400/50 hover:bg-orange-400/20"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Tools & Practices */}
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
-                <div className="mb-6 flex items-center gap-3">
-                  <div className="rounded-xl bg-gradient-to-r from-green-500 to-teal-500 p-3">
-                    <GitBranch className="h-6 w-6 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-green-400">Tools & Practices</h3>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  {["Git", "Agile Development", "System Design", "Clean Architecture", "UI/UX Design", "Problem Solving", "Performance Optimization"].map((tech) => (
-                    <span
-                      key={tech}
-                      className="rounded-full border border-green-400/30 bg-green-400/10 px-5 py-2 text-sm font-medium text-green-300 transition-all hover:border-green-400/50 hover:bg-green-400/20"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Education & Languages Section */}
-        <section className="relative min-h-screen bg-gradient-to-b from-transparent via-black/30 to-transparent px-6 py-32">
-          <div className="mx-auto max-w-6xl">
-            <div className="grid gap-8 lg:grid-cols-2">
-              {/* Education */}
-              <div>
-                <div className="mb-8 text-center lg:text-left">
-                  <div className="mb-4 inline-block rounded-full border border-indigo-400/30 bg-indigo-400/10 px-4 py-1 text-sm font-semibold text-indigo-300">
-                    <GraduationCap className="inline h-4 w-4 mr-2" />
-                    Education
-                  </div>
-                  <h2 className="text-4xl font-bold text-white md:text-5xl">
-                    🎓 Education
-                  </h2>
-                </div>
-
-                <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
-                  <div className="mb-4 inline-block rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 p-3">
-                    <GraduationCap className="h-6 w-6 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">
-                    Bachelor of Computer Applications (BCA)
-                  </h3>
-                  <p className="text-lg text-indigo-400 mb-2">
-                    The Maharaja Sayajirao University of Baroda
-                  </p>
-                  <p className="text-gray-400 mb-4">
-                    Information Technology • 2020 - 2022
-                  </p>
-                  <div className="rounded-lg border border-indigo-400/20 bg-indigo-400/5 p-4">
-                    <p className="text-sm text-gray-300">
-                      Specialized in Information Technology with focus on software development, programming languages, and system design.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Languages & Certifications */}
-              <div>
-                <div className="mb-8 text-center lg:text-left">
-                  <div className="mb-4 inline-block rounded-full border border-teal-400/30 bg-teal-400/10 px-4 py-1 text-sm font-semibold text-teal-300">
-                    <Languages className="inline h-4 w-4 mr-2" />
-                    Languages & Skills
-                  </div>
-                  <h2 className="text-4xl font-bold text-white md:text-5xl">
-                    🌍 Languages
-                  </h2>
-                </div>
-
-                <div className="space-y-6">
-                  {/* Languages */}
-                  <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
-                    <div className="mb-4 inline-block rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 p-3">
-                      <Languages className="h-6 w-6 text-white" />
+            <div className="grid gap-4 sm:grid-cols-2">
+              {[
+                { icon: Smartphone, title: "Mobile", techs: ["Flutter", "React Native", "Android", "Dart"], color: "cosmic-blue" },
+                { icon: Globe, title: "Web", techs: ["React", "Next.js", "Node.js", "TypeScript"], color: "cosmic-purple" },
+                { icon: Brain, title: "AI", techs: ["Python", "LangChain", "RAG", "Local LLMs"], color: "cosmic-orange" },
+                { icon: GitBranch, title: "Tools", techs: ["Git", "Agile", "System Design"], color: "cosmic-teal" }
+              ].map((stack, i) => (
+                <AnimatedText key={i} animation="fade-in-up" delay={0.08 * i}>
+                  <div className="rounded-xl border border-white/8 bg-white/3 p-5 backdrop-blur-sm">
+                    <div className="flex items-center gap-2 mb-3">
+                      <stack.icon className={`h-4 w-4 text-${stack.color}`} />
+                      <h3 className={`text-sm font-semibold text-${stack.color}`}>{stack.title}</h3>
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-4">Spoken Languages</h3>
-                    <div className="space-y-3">
-                      {[
-                        { lang: "English", level: "Full Professional" },
-                        { lang: "Hindi", level: "Native or Bilingual" },
-                        { lang: "Gujarati", level: "Native or Bilingual" }
-                      ].map((item) => (
-                        <div key={item.lang} className="flex items-center justify-between">
-                          <span className="text-gray-300 font-medium">{item.lang}</span>
-                          <span className="text-sm text-teal-400">{item.level}</span>
-                        </div>
+                    <div className="flex flex-wrap gap-2">
+                      {stack.techs.map((t) => (
+                        <span key={t} className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-xs text-secondary">
+                          {t}
+                        </span>
                       ))}
                     </div>
                   </div>
+                </AnimatedText>
+              ))}
+            </div>
+          </div>
+        </section>
 
-                  {/* Certifications */}
-                  <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
-                    <div className="mb-4 inline-block rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 p-3">
-                      <Award className="h-6 w-6 text-white" />
+        {/* ============================================
+            EDUCATION & LANGUAGES
+        ============================================ */}
+        <section className="relative px-6 py-20">
+          <div className="mx-auto max-w-4xl">
+            <div className="grid gap-6 lg:grid-cols-2">
+
+              {/* Education */}
+              <AnimatedText animation="fade-in-left">
+                <div>
+                  <p className="mb-2 text-xs uppercase tracking-widest text-cosmic-purple">Education</p>
+                  <h2 className="text-xl font-semibold text-primary mb-4">Background</h2>
+                  <div className="rounded-xl border border-white/8 bg-white/3 p-5 backdrop-blur-sm">
+                    <GraduationCap className="h-5 w-5 text-cosmic-purple mb-3" />
+                    <h3 className="text-base font-semibold text-primary mb-1">BCA in IT</h3>
+                    <p className="text-sm text-cosmic-cyan mb-0.5">MS University of Baroda</p>
+                    <p className="text-xs text-muted">2020 – 2022</p>
+                  </div>
+                </div>
+              </AnimatedText>
+
+              {/* Languages */}
+              <AnimatedText animation="fade-in-right" delay={0.1}>
+                <div>
+                  <p className="mb-2 text-xs uppercase tracking-widest text-cosmic-teal">Languages</p>
+                  <h2 className="text-xl font-semibold text-primary mb-4">I Speak</h2>
+                  <div className="space-y-3">
+                    <div className="rounded-xl border border-white/8 bg-white/3 p-4 backdrop-blur-sm">
+                      {[
+                        { lang: "English", level: "Professional" },
+                        { lang: "Hindi", level: "Native" },
+                        { lang: "Gujarati", level: "Native" }
+                      ].map((l) => (
+                        <div key={l.lang} className="flex justify-between text-sm py-1">
+                          <span className="text-secondary">{l.lang}</span>
+                          <span className="text-xs text-cosmic-cyan">{l.level}</span>
+                        </div>
+                      ))}
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-4">Certifications</h3>
-                    <div className="flex items-center gap-2 text-gray-300">
-                      <CheckCircle2 className="h-5 w-5 text-green-400" />
-                      <span>Photography</span>
+                    <div className="rounded-xl border border-white/8 bg-white/3 p-4 backdrop-blur-sm flex items-center gap-2 text-sm text-secondary">
+                      <Award className="h-4 w-4 text-cosmic-orange" />
+                      Photography Certification
                     </div>
                   </div>
                 </div>
-              </div>
+              </AnimatedText>
             </div>
           </div>
         </section>
 
-        {/* Philosophy Section */}
-        <section className="relative min-h-screen px-6 py-32">
-          <div className="mx-auto max-w-4xl">
-            <div className="mb-16 text-center">
-              <div className="mb-4 inline-block rounded-full border border-purple-400/30 bg-purple-400/10 px-4 py-1 text-sm font-semibold text-purple-300">
-                Philosophy
-              </div>
-              <h2 className="mb-4 text-5xl font-bold text-white md:text-6xl">
-                🌌 My Approach
-              </h2>
-              <p className="text-xl text-gray-400">
-                How I build software
-              </p>
-            </div>
+        {/* ============================================
+            PHILOSOPHY
+        ============================================ */}
+        <section className="relative px-6 py-20 bg-gradient-to-b from-transparent via-white/2 to-transparent">
+          <div className="mx-auto max-w-2xl text-center">
 
-            <div className="space-y-8">
-              <blockquote className="rounded-3xl border border-white/10 bg-white/5 p-10 backdrop-blur-sm">
-                <p className="mb-6 text-2xl font-light italic leading-relaxed text-gray-300">
-                  "I believe software should feel like a well-directed sci-fi scene:
-                  <span className="text-blue-400"> powerful under the hood</span>,
-                  <span className="text-purple-400"> smooth on the surface</span>, and
-                  <span className="text-pink-400"> purposeful in motion</span>."
+            <AnimatedText animation="scale-in-glow">
+              <p className="mb-2 text-xs uppercase tracking-widest text-cosmic-purple">Philosophy</p>
+              <h2 className="text-2xl font-semibold text-primary mb-6 md:text-3xl">
+                How I Work
+              </h2>
+            </AnimatedText>
+
+            <AnimatedText animation="blur-in" delay={0.2}>
+              <blockquote className="rounded-xl border border-white/8 bg-white/3 p-6 backdrop-blur-sm mb-4">
+                <p className="text-base text-secondary italic leading-relaxed">
+                  "Build things that are{' '}
+                  <span className="text-cosmic-blue font-medium">powerful inside</span>,{' '}
+                  <span className="text-cosmic-purple font-medium">smooth outside</span>, and{' '}
+                  <span className="text-cosmic-pink font-medium">purposeful always</span>."
                 </p>
               </blockquote>
+            </AnimatedText>
 
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-10 backdrop-blur-sm">
-                <p className="text-2xl font-semibold text-white mb-4">
-                  I don't just build features.
-                </p>
-                <p className="text-2xl font-semibold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-6">
-                  I build systems that think, scale, and evolve.
-                </p>
-                <p className="text-lg text-gray-400 leading-relaxed">
-                  As a dedicated and motivated professional, I'm always eager to learn and stay up-to-date with the latest trends and technologies.
-                  I thrive in collaborative environments and enjoy working in agile teams to deliver high-quality products that make a real impact.
-                </p>
-              </div>
-            </div>
+            <AnimatedText animation="fade-in-up" delay={0.3}>
+              <p className="text-lg font-semibold gradient-text">
+                I build systems that scale and evolve.
+              </p>
+            </AnimatedText>
           </div>
         </section>
 
-        {/* Contact Section */}
-        <section id="contact" className="relative min-h-screen bg-gradient-to-b from-transparent to-black/50 px-6 py-32">
-          <div className="mx-auto max-w-4xl text-center">
-            <div className="mb-8">
-              <div className="mb-4 inline-block rounded-full border border-blue-400/30 bg-blue-400/10 px-4 py-1 text-sm font-semibold text-blue-300">
-                <Mail className="inline h-4 w-4 mr-2" />
-                Get in Touch
-              </div>
-              <h2 className="mb-4 text-5xl font-bold text-white md:text-6xl">
-                📫 Let's Build Something Meaningful
+        {/* ============================================
+            CONTACT
+        ============================================ */}
+        <section id="contact" className="relative px-6 py-20">
+          <div className="mx-auto max-w-2xl text-center">
+
+            <AnimatedText animation="fade-in-up">
+              <p className="mb-2 text-xs uppercase tracking-widest text-cosmic-blue">Contact</p>
+              <h2 className="text-2xl font-semibold text-primary mb-3 md:text-3xl">
+                Let's Work Together
               </h2>
-              <p className="mb-12 text-xl leading-relaxed text-gray-400">
-                If you're interested in <span className="text-blue-400">AI-first products</span>,
-                <span className="text-purple-400"> intelligent mobile apps</span>, or
-                <span className="text-pink-400"> future-ready software</span>, let's connect!
+              <p className="text-sm text-secondary mb-8">
+                Building <span className="text-cosmic-blue">AI products</span>,{' '}
+                <span className="text-cosmic-purple">mobile apps</span>, or something new?
               </p>
-            </div>
+            </AnimatedText>
 
             {/* Contact Cards */}
-            <div className="grid gap-6 md:grid-cols-3 mb-12">
-              <a
-                href="mailto:gauravrathva8@gmail.com"
-                className="group rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition-all hover:border-blue-400/50 hover:bg-white/10"
-              >
-                <Mail className="h-8 w-8 text-blue-400 mx-auto mb-3" />
-                <p className="text-sm text-gray-400 mb-1">Email</p>
-                <p className="text-white font-medium group-hover:text-blue-400 transition-colors">
-                  gauravrathva8@gmail.com
-                </p>
-              </a>
+            <AnimatedText animation="fade-in-up" delay={0.2}>
+              <div className="grid gap-3 sm:grid-cols-3 mb-8">
+                <a href="mailto:gauravrathva8@gmail.com" className="group rounded-xl border border-white/8 bg-white/3 p-4 backdrop-blur-sm hover:border-cosmic-blue/30 transition-all card-hover">
+                  <Mail className="h-5 w-5 text-cosmic-blue mx-auto mb-2" />
+                  <p className="text-xs text-muted mb-0.5">Email</p>
+                  <p className="text-sm text-secondary group-hover:text-primary transition-colors truncate">gauravrathva8@gmail.com</p>
+                </a>
+                <a href="tel:9265681173" className="group rounded-xl border border-white/8 bg-white/3 p-4 backdrop-blur-sm hover:border-cosmic-purple/30 transition-all card-hover">
+                  <Phone className="h-5 w-5 text-cosmic-purple mx-auto mb-2" />
+                  <p className="text-xs text-muted mb-0.5">Phone</p>
+                  <p className="text-sm text-secondary group-hover:text-primary transition-colors">+91 9265681173</p>
+                </a>
+                <a href="https://www.linkedin.com/in/gauravrathva-4aa815224" target="_blank" rel="noopener noreferrer" className="group rounded-xl border border-white/8 bg-white/3 p-4 backdrop-blur-sm hover:border-cosmic-pink/30 transition-all card-hover">
+                  <Linkedin className="h-5 w-5 text-cosmic-pink mx-auto mb-2" />
+                  <p className="text-xs text-muted mb-0.5">LinkedIn</p>
+                  <p className="text-sm text-secondary group-hover:text-primary transition-colors">Connect</p>
+                </a>
+              </div>
+            </AnimatedText>
 
-              <a
-                href="tel:9265681173"
-                className="group rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition-all hover:border-purple-400/50 hover:bg-white/10"
-              >
-                <Phone className="h-8 w-8 text-purple-400 mx-auto mb-3" />
-                <p className="text-sm text-gray-400 mb-1">Phone</p>
-                <p className="text-white font-medium group-hover:text-purple-400 transition-colors">
-                  +91 9265681173
-                </p>
-              </a>
-
-              <a
-                href="https://www.linkedin.com/in/gauravrathva-4aa815224"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition-all hover:border-pink-400/50 hover:bg-white/10"
-              >
-                <Linkedin className="h-8 w-8 text-pink-400 mx-auto mb-3" />
-                <p className="text-sm text-gray-400 mb-1">LinkedIn</p>
-                <p className="text-white font-medium group-hover:text-pink-400 transition-colors">
-                  Connect with me
-                </p>
-              </a>
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-center mb-16">
-              <a
-                href="mailto:gauravrathva8@gmail.com"
-                className="group relative overflow-hidden rounded-full bg-gradient-to-r from-blue-500 to-purple-500 px-10 py-5 text-lg font-semibold text-white transition-all hover:shadow-lg hover:shadow-purple-500/50"
-              >
-                <span className="flex items-center gap-2">
-                  <Mail className="h-5 w-5" />
-                  Send Me an Email
-                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </span>
-              </a>
-
-              <a
-                href="https://www.linkedin.com/in/gauravrathva-4aa815224"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full border border-white/20 px-10 py-5 text-lg font-semibold text-white backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10 flex items-center gap-2 justify-center"
-              >
-                <Linkedin className="h-5 w-5" />
-                Connect on LinkedIn
-              </a>
-            </div>
+            {/* CTA */}
+            <AnimatedText animation="scale-in-glow" delay={0.3}>
+              <div className="flex flex-col gap-3 sm:flex-row sm:justify-center mb-10">
+                <a href="mailto:gauravrathva8@gmail.com" className="group rounded-full bg-gradient-to-r from-cosmic-blue to-cosmic-purple px-6 py-3 text-sm font-medium text-white hover:shadow-lg hover:shadow-cosmic-purple/30 transition-all">
+                  <span className="flex items-center justify-center gap-2">
+                    <Mail className="h-4 w-4" />
+                    Send Email
+                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </a>
+                <a href="https://www.linkedin.com/in/gauravrathva-4aa815224" target="_blank" rel="noopener noreferrer" className="rounded-full border border-white/15 px-6 py-3 text-sm font-medium text-secondary hover:border-white/30 hover:text-primary transition-all flex items-center justify-center gap-2">
+                  <Linkedin className="h-4 w-4" />
+                  LinkedIn
+                </a>
+              </div>
+            </AnimatedText>
 
             {/* Footer */}
-            <div className="border-t border-white/10 pt-8">
-              <p className="text-sm text-gray-500 mb-4">
-                © 2026 Gaurav Rathva. Built with Next.js, Three.js, and a passion for cinematic experiences.
+            <div className="border-t border-white/8 pt-6">
+              <p className="text-xs text-muted">
+                © 2026 Gaurav Rathva • Built with Next.js & Three.js
               </p>
-              <p className="text-xs text-gray-600">
-                Vadodara, Gujarat, India • Available for exciting opportunities
+              <p className="text-xs text-muted mt-1">
+                Vadodara, India • Open to opportunities
               </p>
             </div>
           </div>

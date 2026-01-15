@@ -1,20 +1,33 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Space_Grotesk, Orbitron, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import SpaceCursor from "@/components/ui/SpaceCursor";
 
-const inter = Inter({
-  variable: "--font-geist-sans",
+// Primary font - Clean, modern, slightly futuristic
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-primary",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-geist-mono",
+// Display font - For headings, space-themed
+const orbitron = Orbitron({
+  variable: "--font-display",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
+
+// Mono font - For code and technical text
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
-  title: "Gaurav Rathva | Portfolio",
-  description: "Software Engineer - Mobile & AI Systems Builder",
+  title: "Gaurav Rathva | Software Engineer",
+  description: "Mobile & AI Systems Builder | Flutter, React Native, Python, LangChain",
+  keywords: ["Software Engineer", "Flutter", "React Native", "AI", "LangChain", "Mobile Developer"],
 };
 
 export default function RootLayout({
@@ -25,8 +38,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${spaceGrotesk.variable} ${orbitron.variable} ${jetbrainsMono.variable} antialiased`}
       >
+        <SpaceCursor />
         {children}
       </body>
     </html>
