@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Orbitron, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import SpaceCursor from "@/components/ui/SpaceCursor";
+import ClarityAnalytics from "@/components/analytics/ClarityAnalytics";
 import Script from "next/script";
 
 // Primary font - Clean, modern, slightly futuristic
@@ -244,6 +245,7 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${orbitron.variable} ${jetbrainsMono.variable} antialiased`}
       >
+        <ClarityAnalytics />
         <SpaceCursor />
         {children}
       </body>
